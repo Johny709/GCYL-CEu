@@ -1,6 +1,6 @@
 package com.fulltrix.gcyl.jei.category;
 
-import com.fulltrix.gcyl.Tags;
+import com.fulltrix.gcyl.GCYLCore;
 import com.fulltrix.gcyl.jei.SpacePumpInfo;
 import gregtech.api.gui.GuiTextures;
 import gregtech.api.util.GTStringUtils;
@@ -103,7 +103,7 @@ public class SpacePumpCategory extends BasicRecipeCategory<SpacePumpInfo, SpaceP
 
     @Override
     public @NotNull String getModName() {
-        return Tags.MODID;
+        return GCYLCore.MODID;
     }
 }
 

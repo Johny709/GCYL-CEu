@@ -1,6 +1,5 @@
 package com.fulltrix.gcyl.api.multi;
 
-import com.fulltrix.gcyl.Tags;
 import com.fulltrix.gcyl.api.recipes.CachedRecipes;
 import com.fulltrix.gcyl.machines.multi.advance.MetaTileEntityOreFactory;
 import gregtech.api.capability.GregtechDataCodes;
@@ -12,7 +11,6 @@ import gregtech.api.recipes.RecipeMap;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Materials;
 import gregtech.api.unification.ore.OrePrefix;
-import gregtech.api.util.GTLog;
 import gregtech.api.util.GTTransferUtils;
 import gregtech.api.util.GTUtility;
 import gregtech.common.ConfigHolder;

@@ -43,9 +43,9 @@ import static gregtech.api.GregTechAPI.HEATING_COILS;
                 "required-after:modularui@[2.3,);" + GTInternalTags.DEP_VERSION_STRING + "required-after:gcym@[1.3.,);" +
                 "required-after:materialreplication@[1.2.7,);" + "required-after:groovyscript@[1.2,);" + "required-after:jei@[4.15.0,);")
 public class GCYLCore {
-    public static final String MODID = Tags.MODID;
-    public static final String NAME = Tags.MODNAME;
-    public static final String VERSION = Tags.VERSION;
+    public static final String MODID = "gcyl";
+    public static final String NAME = "GCYL: CEu";
+    public static final String VERSION = "0.1.0";
     @SidedProxy(modId = MODID, clientSide = "com.fulltrix.gcyl.ClientProxy", serverSide = "com.fulltrix.gcyl.CommonProxy")
     public static CommonProxy proxy;
 

@@ -21,22 +21,55 @@
  *
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
+repositories {
+    // Other repositories described by default:
+    // CleanroomMC: https://maven.cleanroommc.com
+    flatDir {
+        dirs 'libs'
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name 'CurseMaven'
+                url 'https://cursemaven.com'
+            }
+        }
+        filter {
+            includeGroup 'curse.maven'
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name 'Modrinth'
+                url 'https://api.modrinth.com/maven'
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
+    }
+    mavenLocal() // Must be last for caching to work
+}
+
 dependencies {
 
     // Hard Dependencies
-    devOnlyNonPublishable(rfg.deobf(project.files("libs/gregtech-1.12.2-2.9.0-beta-dev.jar"))) // GTCEu 2.9.0
-    devOnlyNonPublishable(rfg.deobf(project.files("libs/Supercritical-0.0.2-dev.jar")))
-    implementation rfg.deobf("curse.maven:codechicken-lib-1-8-242818:2779848") // CCL 3.2.3.358
-    devOnlyNonPublishable(rfg.deobf(project.files("libs/GregicalityMultiblocks-1.3.0-dev.jar"))) //GCYM 1.3
+    api(rfg.deobf(project.files("lib/gregtech-1.12.2-2.9.0-beta-dev.jar"))) // GTCEu 2.9.0
+    api(rfg.deobf(project.files("lib/Supercritical-0.0.2-dev.jar")))
+    api(rfg.deobf(project.files("lib/CodeChickenLib-1.12.2-3.2.3.358-universal.jar"))) // CCL 3.2.3.358
+    api(rfg.deobf(project.files("lib/gcym-1.12.2-1.2.11-dev.jar"))) //GCYM 1.3
     implementation("com.cleanroommc:groovyscript:1.2.0-hotfix1") { transitive = false }
-    devOnlyNonPublishable(rfg.deobf(project.files("libs/MaterialReplication-1.2.7-dev.jar"))) //Material replication 1.3.0
+    api(rfg.deobf(project.files("lib/MaterialReplication-1.2.7-dev.jar"))) //Material replication 1.3.0
+    api("curse.maven:had-enough-items-557549:5906628")
+    api("org.jetbrains:annotations:26.1.0")
 
     // Soft Dependencies
-    implementation "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.684"
-    compileOnlyApi rfg.deobf("curse.maven:ctm-267602:2915363") // CTM 1.0.2.31
-    compileOnlyApi rfg.deobf("curse.maven:ae2-extended-life-570458:5147702") // AE2UEL 0.56.4
-    compileOnlyApi rfg.deobf("curse.maven:ae2-fluid-crafting-rework-623955:5751930")
-    compileOnlyApi rfg.deobf("curse.maven:galacticraft-legacy-564236:4671122")
+    api("curse.maven:crafttweaker-239197:5486112")
+    api(rfg.deobf("curse.maven:ctm-267602:2915363")) // CTM 1.0.2.31
+    api(rfg.deobf("curse.maven:ae2-extended-life-570458:5147702")) // AE2UEL 0.56.4
+    api(rfg.deobf("curse.maven:ae2-fluid-crafting-rework-623955:5751930"))
+    api(rfg.deobf("curse.maven:galacticraft-legacy-564236:4671122"))
     api("com.cleanroommc:modularui:3.0.4") { transitive = false }
 
     compileOnly("curse.maven:journeymap-32274:5172461") // Journeymap 5.7.1p3

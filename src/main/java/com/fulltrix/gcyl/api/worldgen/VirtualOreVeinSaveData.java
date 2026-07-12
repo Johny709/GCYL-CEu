@@ -1,6 +1,6 @@
 package com.fulltrix.gcyl.api.worldgen;
 
-import com.fulltrix.gcyl.Tags;
+import com.fulltrix.gcyl.GCYLCore;
 import gregtech.api.worldgen.bedrockFluids.ChunkPosDimension;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -15,7 +15,7 @@ public class VirtualOreVeinSaveData extends WorldSavedData {
 
     private static VirtualOreVeinSaveData INSTANCE;
 
-    public static final String dataName = Tags.MODID + ".virtualOreVeinData";
+    public static final String dataName = GCYLCore.MODID + ".virtualOreVeinData";
 
     public VirtualOreVeinSaveData(String s) {
         super(s);

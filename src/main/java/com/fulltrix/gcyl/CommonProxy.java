@@ -106,7 +106,7 @@ public class CommonProxy {
 
     @SubscribeEvent
     public static void registerMTERegistry(MTEManager.MTERegistryEvent event) {
-        GregTechAPI.mteManager.createRegistry(Tags.MODID);
+        GregTechAPI.mteManager.createRegistry(GCYLCore.MODID);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -174,7 +174,7 @@ public class CommonProxy {
 
     @SubscribeEvent
     public static void createMaterialRegistry(MaterialRegistryEvent event) {
-        GregTechAPI.materialManager.createRegistry(Tags.MODID);
+        GregTechAPI.materialManager.createRegistry(GCYLCore.MODID);
     }
 
 

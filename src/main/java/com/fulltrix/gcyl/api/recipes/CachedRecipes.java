@@ -1,6 +1,5 @@
 package com.fulltrix.gcyl.api.recipes;
 
-import com.fulltrix.gcyl.Tags;
 import gregtech.api.recipes.Recipe;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Material;
