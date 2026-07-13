@@ -3,6 +3,7 @@ package com.fulltrix.gcyl.materials;
 //import com.fulltrix.tjfcore.materials.IsotopeMaterial;
 //import com.fulltrix.tjfcore.materials.RadioactiveMaterial;
 
+import com.fulltrix.gcyl.GCYLCore;
 import com.fulltrix.gcyl.materials.chains.MiscMaterials;
 import com.fulltrix.gcyl.materials.chains.NewPlatinumGroupMaterials;
 import com.fulltrix.gcyl.materials.chains.NewREEMaterials;
@@ -10748,13 +10749,15 @@ public class GCYLMaterials {
                 .iconSet(FLUID)
                 .build();
 
-        HotLiquidBoronTrioxide = new Material.Builder(++id, gcylId("hot_boron_trioxide"))
-                .liquid(new FluidBuilder().temperature(573))
-                .color(BoronTrioxide.getMaterialRGB() + 10)
-                .components(BoronTrioxide, 1)
-                .flags(DISABLE_REPLICATION, DISABLE_DECOMPOSITION)
-                .iconSet(FLUID)
-                .build();
+        if (GCYLCore.isModLoaded("supercritical")) {
+            HotLiquidBoronTrioxide = new Material.Builder(++id, gcylId("hot_boron_trioxide"))
+                    .liquid(new FluidBuilder().temperature(573))
+                    .color(BoronTrioxide.getMaterialRGB() + 10)
+                    .components(BoronTrioxide, 1)
+                    .flags(DISABLE_REPLICATION, DISABLE_DECOMPOSITION)
+                    .iconSet(FLUID)
+                    .build();
+        }
 
         Placeholder = new Material.Builder(32766, gcylId("placeholder"))
                 .liquid(new FluidBuilder().disableBucket())

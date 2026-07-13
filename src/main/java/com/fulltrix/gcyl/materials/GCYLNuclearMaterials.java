@@ -1,5 +1,6 @@
 package com.fulltrix.gcyl.materials;
 
+import com.fulltrix.gcyl.GCYLCore;
 import supercritical.api.unification.material.properties.FissionFuelProperty;
 import supercritical.api.unification.material.properties.SCPropertyKey;
 import gregtech.api.unification.Elements;
@@ -277,8 +278,10 @@ public class GCYLNuclearMaterials {
                 //.fissionFuel(2000, 1000, 1000, 0, 100, 10, 3.5)
                 .build();
 
-        Np237Breeder.setProperty(SCPropertyKey.FISSION_FUEL, new FissionFuelProperty(
-                2000, 1000, 1000., 0.,
-                100., 10., 3.5, Np237Breeder.getRegistryName()));
+        if (GCYLCore.isModLoaded("supercritical")) {
+            Np237Breeder.setProperty(SCPropertyKey.FISSION_FUEL, new FissionFuelProperty(
+                    2000, 1000, 1000., 0.,
+                    100., 10., 3.5, Np237Breeder.getRegistryName()));
+        }
     }
 }

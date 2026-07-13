@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -32,6 +33,8 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.fulltrix.gcyl.api.GCYLAPI.*;
 import static com.fulltrix.gcyl.blocks.GCYLMetaBlocks.*;
@@ -48,6 +51,8 @@ public class GCYLCore {
     public static final String VERSION = "0.1.0";
     @SidedProxy(modId = MODID, clientSide = "com.fulltrix.gcyl.ClientProxy", serverSide = "com.fulltrix.gcyl.CommonProxy")
     public static CommonProxy proxy;
+
+    private static final ConcurrentMap<String, Boolean> IS_MOD_LOADED_CACHE = new ConcurrentHashMap<>();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -130,5 +135,14 @@ public class GCYLCore {
         VirtualEnergyRegistry.clearMaps();
         VirtualContainerRegistry.clearMaps();
         VirtualResearchRegistry.clearMaps();
+    }
+
+    public static boolean isModLoaded(String modid) {
+        if (IS_MOD_LOADED_CACHE.containsKey(modid)) {
+            return IS_MOD_LOADED_CACHE.get(modid);
+        }
+        boolean isLoaded = Loader.instance().getIndexedModList().containsKey(modid);
+        IS_MOD_LOADED_CACHE.put(modid, isLoaded);
+        return isLoaded;
     }
 }
