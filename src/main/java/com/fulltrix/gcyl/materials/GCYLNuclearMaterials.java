@@ -2,6 +2,7 @@ package com.fulltrix.gcyl.materials;
 
 import supercritical.api.unification.material.properties.FissionFuelProperty;
 import supercritical.api.unification.material.properties.SCPropertyKey;
+import gregtech.api.unification.Elements;
 import gregtech.api.unification.material.Material;
 import gregtech.api.unification.material.properties.BlastProperty;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -14,6 +15,7 @@ import static com.fulltrix.gcyl.GCYLElements.*;
 import static com.fulltrix.gcyl.api.GCYLUtility.gcylId;
 import static com.fulltrix.gcyl.api.recipes.GCYLMaterialFlags.NO_MIXER_RECIPE;
 import static com.fulltrix.gcyl.materials.GCYLMaterials.Placeholder;
+import static gregtech.api.unification.Elements.*;
 import static gregtech.api.unification.material.Materials.*;
 import static gregtech.api.unification.material.Materials.STD_METAL;
 import static gregtech.api.unification.material.info.MaterialFlags.DISABLE_DECOMPOSITION;
@@ -275,7 +277,8 @@ public class GCYLNuclearMaterials {
                 //.fissionFuel(2000, 1000, 1000, 0, 100, 10, 3.5)
                 .build();
 
-        Np237Breeder.setProperty(SCPropertyKey.FISSION_FUEL, FissionFuelProperty.builder(Np237Breeder.getRegistryName(),
-                2000, 1000, 3.5).build());
+        Np237Breeder.setProperty(SCPropertyKey.FISSION_FUEL, new FissionFuelProperty(
+                2000, 1000, 1000., 0.,
+                100., 10., 3.5, Np237Breeder.getRegistryName()));
     }
 }

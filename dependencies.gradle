@@ -56,7 +56,7 @@ dependencies {
 
     // Hard Dependencies
     api(rfg.deobf(project.files("lib/gregtech-1.12.2-2.9.0-beta-dev.jar"))) // GTCEu 2.9.0
-    implementation(rfg.deobf("curse.maven:supercritical-1185871:7864560"))
+    api(rfg.deobf(project.files("lib/Supercritical-0.0.2.jar")))
     api(rfg.deobf(project.files("lib/CodeChickenLib-1.12.2-3.2.3.358-universal.jar"))) // CCL 3.2.3.358
     api(rfg.deobf(project.files("lib/gcym-1.12.2-1.2.11-dev.jar"))) //GCYM 1.3
     implementation("com.cleanroommc:groovyscript:1.2.0-hotfix1") { transitive = false }
