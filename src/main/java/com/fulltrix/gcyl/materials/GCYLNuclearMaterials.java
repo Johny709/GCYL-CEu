@@ -66,11 +66,13 @@ public class GCYLNuclearMaterials {
                 .ingot(2).liquid()
                 .color(0xB4B3B0)
                 .iconSet(SHINY)
-                .flags(GENERATE_DENSE, DISABLE_DECOMPOSITION, DISABLE_REPLICATION, NO_MIXER_RECIPE)
+                .flags(GENERATE_DENSE, DISABLE_DECOMPOSITION, NO_MIXER_RECIPE)
                 .components(Iron,15,Niobium,1,Vanadium,4,Carbon,2)
                 .blast(b->b.temp(3800, BlastProperty.GasTier.HIGH))
                 .build();
 
+        if (GCYLCore.isModLoaded("materialreplication"))
+            ReactorSteel.addFlags(DISABLE_REPLICATION);
         ++id; //TODO FREE MATERIAL
 
         Americium241 = new Material.Builder(++id, gcylId("americium_241"))
@@ -274,9 +276,12 @@ public class GCYLNuclearMaterials {
                 .components(Placeholder, 1, Aluminium, 1) //Neptunium237
                 .color(Neptunium.getMaterialRGB())
                 .iconSet(DULL)
-                .flags(DISABLE_REPLICATION, DISABLE_DECOMPOSITION)
+                .flags(DISABLE_DECOMPOSITION)
                 //.fissionFuel(2000, 1000, 1000, 0, 100, 10, 3.5)
                 .build();
+
+        if (GCYLCore.isModLoaded("materialreplication"))
+            Np237Breeder.addFlags(DISABLE_REPLICATION);
 
         if (GCYLCore.isModLoaded("supercritical")) {
             Np237Breeder.setProperty(SCPropertyKey.FISSION_FUEL, new FissionFuelProperty(
