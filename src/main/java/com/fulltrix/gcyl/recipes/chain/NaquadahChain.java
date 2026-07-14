@@ -1,6 +1,8 @@
 package com.fulltrix.gcyl.recipes.chain;
 
 import com.fulltrix.gcyl.GCYLConfig;
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import gregtech.api.unification.material.Material;
 
@@ -707,18 +709,6 @@ public class NaquadahChain {
                 .duration(100)
                 .buildAndRegister();
 
-
-        ADVANCED_MIXER_RECIPES.recipeBuilder()
-                .fluidInputs(LightNaquadahFuel.getFluid(500))
-                .fluidInputs(LightENaquadahFuel.getFluid(300))
-                .fluidInputs(NaquadriaSolution.getFluid(200))
-                .input(dust, Rutherfordium)
-                .fluidInputs(Plutonium244.getFluid(144))
-                .fluidOutputs(HyperFuelI.getFluid(2000))
-                .EUt(1920)
-                .duration(200)
-                .buildAndRegister();
-
         ADVANCED_MIXER_RECIPES.recipeBuilder()
                 .fluidInputs(MediumNaquadahFuel.getFluid(400))
                 .fluidInputs(MediumENaquadahFuel.getFluid(350))
@@ -750,5 +740,18 @@ public class NaquadahChain {
                 .EUt(8000000)
                 .duration(1)
                 .buildAndRegister();
+
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
+            ADVANCED_MIXER_RECIPES.recipeBuilder()
+                    .fluidInputs(LightNaquadahFuel.getFluid(500))
+                    .fluidInputs(LightENaquadahFuel.getFluid(300))
+                    .fluidInputs(NaquadriaSolution.getFluid(200))
+                    .input(dust, Rutherfordium)
+                    .fluidInputs(Plutonium244.getFluid(144))
+                    .fluidOutputs(HyperFuelI.getFluid(2000))
+                    .EUt(1920)
+                    .duration(200)
+                    .buildAndRegister();
+        }
     }
 }

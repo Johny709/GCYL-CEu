@@ -1,6 +1,7 @@
 package com.fulltrix.gcyl.materials;
 
 import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import supercritical.api.unification.material.properties.FissionFuelProperty;
 import supercritical.api.unification.material.properties.SCPropertyKey;
 import gregtech.api.unification.Elements;
@@ -71,7 +72,7 @@ public class GCYLNuclearMaterials {
                 .blast(b->b.temp(3800, BlastProperty.GasTier.HIGH))
                 .build();
 
-        if (GCYLCore.isModLoaded("materialreplication"))
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID))
             ReactorSteel.addFlags(DISABLE_REPLICATION);
         ++id; //TODO FREE MATERIAL
 
@@ -280,10 +281,10 @@ public class GCYLNuclearMaterials {
                 //.fissionFuel(2000, 1000, 1000, 0, 100, 10, 3.5)
                 .build();
 
-        if (GCYLCore.isModLoaded("materialreplication"))
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID))
             Np237Breeder.addFlags(DISABLE_REPLICATION);
 
-        if (GCYLCore.isModLoaded("supercritical")) {
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
             Np237Breeder.setProperty(SCPropertyKey.FISSION_FUEL, new FissionFuelProperty(
                     2000, 1000, 1000., 0.,
                     100., 10., 3.5, Np237Breeder.getRegistryName()));

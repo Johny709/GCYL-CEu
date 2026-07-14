@@ -1,5 +1,7 @@
 package com.fulltrix.gcyl.recipes.categories;
 
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
 import com.fulltrix.gcyl.blocks.GCYLMultiblockCasing2;
 import gregicality.multiblocks.common.metatileentities.GCYMMetaTileEntities;
@@ -114,16 +116,6 @@ public class CasingRecipes {
                 .inputs(MetaTileEntities.HULL[GTValues.LuV].getStackForm())
                 .fluidInputs(Uranium238.getFluid(L * 2))
                 .outputs(GCYMMetaTileEntities.TIERED_HATCH[6].getStackForm())
-                .buildAndRegister();
-
-        ASSEMBLER_RECIPES.recipeBuilder().duration(100).EUt(30720 * 4)
-                .input(circuit, ZPM, 2)
-                .input(gear, BabbittAlloy, 4)
-                .input(plate, BabbittAlloy, 4)
-                .input(cableGtOctal, NiobiumTitanium)
-                .inputs(MetaTileEntities.HULL[GTValues.ZPM].getStackForm())
-                .fluidInputs(Plutonium244.getFluid(L * 2))
-                .outputs(GCYMMetaTileEntities.TIERED_HATCH[7].getStackForm())
                 .buildAndRegister();
 
         ASSEMBLER_RECIPES.recipeBuilder().duration(100).EUt(30720 * 16)
@@ -645,6 +637,17 @@ public class CasingRecipes {
                 .outputs(GCYLMetaBlocks.MULTIBLOCK_CASING2.getItemVariant(GCYLMultiblockCasing2.CasingType.SEABORGIUM_SUBSTATION, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
+            ASSEMBLER_RECIPES.recipeBuilder().duration(100).EUt(30720 * 4)
+                    .input(circuit, ZPM, 2)
+                    .input(gear, BabbittAlloy, 4)
+                    .input(plate, BabbittAlloy, 4)
+                    .input(cableGtOctal, NiobiumTitanium)
+                    .inputs(MetaTileEntities.HULL[GTValues.ZPM].getStackForm())
+                    .fluidInputs(Plutonium244.getFluid(L * 2))
+                    .outputs(GCYMMetaTileEntities.TIERED_HATCH[7].getStackForm())
+                    .buildAndRegister();
+        }
     }
 
     //TODO: component casings?

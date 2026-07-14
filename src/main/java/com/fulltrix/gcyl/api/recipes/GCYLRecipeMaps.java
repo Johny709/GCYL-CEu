@@ -2,6 +2,8 @@ package com.fulltrix.gcyl.api.recipes;
 
 //import com.fulltrix.tjfcore.recipes.impl.NuclearReactorBuilder;
 
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import com.fulltrix.gcyl.api.recipes.builders.AdvFusionRecipeBuilder;
 import com.fulltrix.gcyl.api.recipes.builders.ComponentALRecipeBuilder;
 import com.fulltrix.gcyl.api.recipes.builders.DeepMinerBuilder;
@@ -213,7 +215,8 @@ public final class GCYLRecipeMaps {
 
         EXTRACTOR_RECIPES.setMaxInputs(2);
 
-        GAS_CENTRIFUGE_RECIPES.setMaxFluidOutputs(3);
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID))
+            GAS_CENTRIFUGE_RECIPES.setMaxFluidOutputs(3);
 
         CIRCUIT_ASSEMBLER_RECIPES.setMaxInputs(7);
 

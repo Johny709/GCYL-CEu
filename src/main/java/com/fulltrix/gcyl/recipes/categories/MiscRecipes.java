@@ -1,5 +1,7 @@
 package com.fulltrix.gcyl.recipes.categories;
 
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import gregicality.multiblocks.api.fluids.GCYMFluidStorageKeys;
 import gregtech.api.GTValues;
 import gregtech.api.fluids.store.FluidStorageKeys;
@@ -35,7 +37,7 @@ import static kono.ceu.materialreplication.api.unification.materials.MRMaterials
 public class MiscRecipes {
     public static void init() {
         initSolars();
-highTierVoltageCoils();
+        highTierVoltageCoils();
 
         //TODO: FINISH NUCLEAR AND REMOVE
         temporaryNuclearRecipes();
@@ -273,29 +275,11 @@ highTierVoltageCoils();
                 .chancedOutput(dust, Bismuth, 10000, 0)
                 .buildAndRegister();
 
-        DECAY_CHAMBERS_RECIPES.recipeBuilder().EUt(1920).duration(300)
-                .input(dust, Uranium238, 1)
-                .fluidInputs(NeutralMatter.getFluid(200))
-                .chancedOutputLogic(ChancedOutputLogic.XOR)
-                .chancedOutput(dust, Plutonium, 2000, 0)
-                .chancedOutput(dust, Uranium, 10000, 0)
-                .buildAndRegister();
-
-
         DECAY_CHAMBERS_RECIPES.recipeBuilder().EUt(GTValues.VA[GTValues.IV]).duration(600)
                 .input(dust, Plutonium241)
                 .chancedOutputLogic(ChancedOutputLogic.XOR)
                 .chancedOutput(dust, Americium, 2000, 0)
                 .chancedOutput(dust, Plutonium, 10000, 0)
-                .buildAndRegister();
-
-        //isotopes
-        DECAY_CHAMBERS_RECIPES.recipeBuilder().EUt(1920).duration(300)
-                .input(dust, Bismuth, 1)
-                .fluidInputs(NeutralMatter.getFluid(100))
-                .chancedOutputLogic(ChancedOutputLogic.XOR)
-                .chancedOutput(dust, Bismuth210, 2500, 0)
-                .chancedOutput(dust, Bismuth, 10000, 0)
                 .buildAndRegister();
 
         CENTRIFUGE_RECIPES.recipeBuilder().EUt(320).duration(1600)
@@ -304,21 +288,6 @@ highTierVoltageCoils();
                 .chancedOutput(dust, Uranium235, 100,0)
                 .chancedOutput(dust,Uranium238, 10000,0)
                 .buildAndRegister();
-
-        CENTRIFUGE_RECIPES.recipeBuilder().EUt(320).duration(1600)
-                .input(dust, Plutonium)
-                .chancedOutputLogic(ChancedOutputLogic.XOR)
-                .chancedOutput(dust, Plutonium244, 2500,0)
-                .chancedOutput(dust,Plutonium241, 5000,0)
-                .chancedOutput(dust,Plutonium239, 10000,0)
-                .buildAndRegister();
-
-        CENTRIFUGE_RECIPES.recipeBuilder().EUt(320).duration(1600)
-                .input(dust, Plutonium241)
-                .chancedOutput(dust, Plutonium244, 2000, 300)
-                .chancedOutput(dustTiny, Uranium238, 3000, 450)
-                .buildAndRegister();
-
 
         //NUCLEAR STAR
         AUTOCLAVE_RECIPES.recipeBuilder().EUt(GTValues.VA[GTValues.UIV]).duration(600)
@@ -374,6 +343,41 @@ highTierVoltageCoils();
                 .inputs(new ItemStack(Items.SNOWBALL))
                 .output(dust, Snow)
                 .buildAndRegister();
+
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
+            CENTRIFUGE_RECIPES.recipeBuilder().EUt(320).duration(1600)
+                    .input(dust, Plutonium)
+                    .chancedOutputLogic(ChancedOutputLogic.XOR)
+                    .chancedOutput(dust, Plutonium244, 2500, 0)
+                    .chancedOutput(dust, Plutonium241, 5000, 0)
+                    .chancedOutput(dust, Plutonium239, 10000, 0)
+                    .buildAndRegister();
+
+            CENTRIFUGE_RECIPES.recipeBuilder().EUt(320).duration(1600)
+                    .input(dust, Plutonium241)
+                    .chancedOutput(dust, Plutonium244, 2000, 300)
+                    .chancedOutput(dustTiny, Uranium238, 3000, 450)
+                    .buildAndRegister();
+        }
+
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID)) {
+            //isotopes
+            DECAY_CHAMBERS_RECIPES.recipeBuilder().EUt(1920).duration(300)
+                    .input(dust, Bismuth, 1)
+                    .fluidInputs(NeutralMatter.getFluid(100))
+                    .chancedOutputLogic(ChancedOutputLogic.XOR)
+                    .chancedOutput(dust, Bismuth210, 2500, 0)
+                    .chancedOutput(dust, Bismuth, 10000, 0)
+                    .buildAndRegister();
+
+            DECAY_CHAMBERS_RECIPES.recipeBuilder().EUt(1920).duration(300)
+                    .input(dust, Uranium238, 1)
+                    .fluidInputs(NeutralMatter.getFluid(200))
+                    .chancedOutputLogic(ChancedOutputLogic.XOR)
+                    .chancedOutput(dust, Plutonium, 2000, 0)
+                    .chancedOutput(dust, Uranium, 10000, 0)
+                    .buildAndRegister();
+        }
     }
 
     private static void highTierVoltageCoils() {

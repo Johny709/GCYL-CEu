@@ -2,6 +2,7 @@ package com.fulltrix.gcyl.materials;
 
 import com.fulltrix.gcyl.GCYLConfig;
 import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import supercritical.SCValues;
 import supercritical.api.unification.material.properties.CoolantProperty;
 import supercritical.api.unification.material.properties.SCPropertyKey;
@@ -47,7 +48,7 @@ public class GCYLMaterialOverride {
     }
 
     private static void coolants() {
-        if (GCYLCore.isModLoaded("supercritical")) {
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
             CarbonDioxide.setProperty(SCPropertyKey.COOLANT,
                     new CoolantProperty(CarbonDioxide, SupercriticalCO2, FluidStorageKeys.LIQUID, 13., 28, 195, 380000, 846));
 
@@ -512,7 +513,7 @@ public class GCYLMaterialOverride {
         Collections.addAll(mixermats, HSSS, Osmiridium, WatertightSteel, MaragingSteel300, Stellite100, HastelloyC276, HastelloyX, Trinaquadalloy, Zeron100, TitaniumCarbide, TantalumCarbide, HSLASteel, BlackSteel, BlackBronze,
                 SterlingSilver, NaquadahAlloy, LVSuperconductorBase, MVSuperconductorBase, HVSuperconductorBase,EVSuperconductorBase,IVSuperconductorBase,LuVSuperconductorBase,ZPMSuperconductorBase,UVSuperconductorBase,UHVSuperconductorBase,
                 UEVSuperconductorBase,UIVSuperconductorBase,UXVSuperconductorBase,OpVSuperconductorBase);
-        if (GCYLCore.isModLoaded("supercritical"))
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID))
             Collections.addAll(mixermats, Zircaloy, Inconel);
         for(Material mat: mixermats) {
             mat.addFlags(NO_MIXER_RECIPE);

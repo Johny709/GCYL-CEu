@@ -1,6 +1,8 @@
 package com.fulltrix.gcyl.recipes.categories;
 
 import com.fulltrix.gcyl.GCYLConfig;
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import com.fulltrix.gcyl.api.recipes.properties.GCYLScanProperty;
 import gregtech.api.GTValues;
 import gregtech.api.metatileentity.multiblock.CleanroomType;
@@ -74,8 +76,6 @@ public class DeepMinerRecipes {
         createResearchRecipe("deep_salts", OreDictUnifier.get(block, Salt), HydrofluoricAcid.getFluid(16000), TOOL_DATA_DEEP_MINER.getStackForm(), true, 300, 1920, 0);
 
         createResearchRecipe("deep_exotics", OreDictUnifier.get(block, Enderium), null, TOOL_DATA_DEEP_MINER.getStackForm(), true, 300, 1920, 0);
-
-        createResearchRecipe("deep_radioactive", OreDictUnifier.get(block, Plutonium244), null, TOOL_DATA_DEEP_MINER.getStackForm(), true, 300, 7860, 0);
 
         createResearchRecipe("deep_tantalum", OreDictUnifier.get(block, Tantalum), null, TOOL_DATA_DEEP_MINER.getStackForm(), true, 300, 7860, 0);
 
@@ -343,25 +343,27 @@ public class DeepMinerRecipes {
                 .dimension(0)
                 .buildAndRegister();
 
-
-        DEEP_MINER_RECIPES.recipeBuilder()
-                .notConsumable(minerScanMap.get("deep_radioactive"))
-                .circuitMeta(0)
-                .input(SENSOR_LuV)
-                .input(ELECTRIC_PISTON_LUV)
-                .fluidInputs(DrillingFluid.getFluid(512000))
-                .fluidInputs(NitricAcid.getFluid(64000))
-                .output(ore, Uranium238, 64)
-                .chancedOutput(ore, Uranium238, 64, 100, 2000)
-                .chancedOutput(ore, Uranium238, 64, 100, 500)
-                .output(ore, Plutonium, 32)
-                .chancedOutput(ore, Plutonium, 32, 100, 2000)
-                .chancedOutput(ore, Plutonium, 32, 100, 500)
-                .duration(4000)
-                .EUt(GTValues.VA[GTValues.LuV])
-                .temperature(7200)
-                .dimension(0)
-                .buildAndRegister();
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
+            createResearchRecipe("deep_radioactive", OreDictUnifier.get(block, Plutonium244), null, TOOL_DATA_DEEP_MINER.getStackForm(), true, 300, 7860, 0);
+            DEEP_MINER_RECIPES.recipeBuilder()
+                    .notConsumable(minerScanMap.get("deep_radioactive"))
+                    .circuitMeta(0)
+                    .input(SENSOR_LuV)
+                    .input(ELECTRIC_PISTON_LUV)
+                    .fluidInputs(DrillingFluid.getFluid(512000))
+                    .fluidInputs(NitricAcid.getFluid(64000))
+                    .output(ore, Uranium238, 64)
+                    .chancedOutput(ore, Uranium238, 64, 100, 2000)
+                    .chancedOutput(ore, Uranium238, 64, 100, 500)
+                    .output(ore, Plutonium, 32)
+                    .chancedOutput(ore, Plutonium, 32, 100, 2000)
+                    .chancedOutput(ore, Plutonium, 32, 100, 500)
+                    .duration(4000)
+                    .EUt(GTValues.VA[GTValues.LuV])
+                    .temperature(7200)
+                    .dimension(0)
+                    .buildAndRegister();
+        }
 
         if (GCYLConfig.recipes.useNewPlatinumChain) {
             //TODO Add this

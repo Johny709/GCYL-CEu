@@ -1,5 +1,7 @@
 package com.fulltrix.gcyl.recipes.chain;
 
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import gregtech.api.fluids.store.FluidStorageKeys;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import net.minecraft.init.Blocks;
@@ -29,14 +31,6 @@ public class VariousChains {
 
 
     private static void misc() {
-
-        // UU-Matter ===================================================================================================
-        ADVANCED_MIXER_RECIPES.recipeBuilder().duration(50).EUt(491520)
-                .fluidInputs(ChargedMatter.getFluid(1000))
-                .fluidInputs(NeutralMatter.getFluid(1000))
-                .fluidInputs(FreeElectronGas.getFluid(2000))
-                .fluidOutputs(UUMatter.getFluid(1000))
-                .buildAndRegister();
 
         // HClO + NaOH -> H2O + NaClO
         CHEMICAL_RECIPES.recipeBuilder().duration(90).EUt(120)
@@ -343,6 +337,16 @@ public class VariousChains {
                 .notConsumable(IntCircuitIngredient.getIntegratedCircuit(1))
                 .output(dust, AluminiumChloride, 4)
                 .buildAndRegister();
+
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID)) {
+            // UU-Matter ===================================================================================================
+            ADVANCED_MIXER_RECIPES.recipeBuilder().duration(50).EUt(491520)
+                    .fluidInputs(ChargedMatter.getFluid(1000))
+                    .fluidInputs(NeutralMatter.getFluid(1000))
+                    .fluidInputs(FreeElectronGas.getFluid(2000))
+                    .fluidOutputs(UUMatter.getFluid(1000))
+                    .buildAndRegister();
+        }
     }
 
     private static void hydrogenPeroxide() {

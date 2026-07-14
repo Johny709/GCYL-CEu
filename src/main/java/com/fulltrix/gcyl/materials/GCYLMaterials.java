@@ -4,6 +4,7 @@ package com.fulltrix.gcyl.materials;
 //import com.fulltrix.tjfcore.materials.RadioactiveMaterial;
 
 import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import com.fulltrix.gcyl.materials.chains.MiscMaterials;
 import com.fulltrix.gcyl.materials.chains.NewPlatinumGroupMaterials;
 import com.fulltrix.gcyl.materials.chains.NewREEMaterials;
@@ -6857,7 +6858,7 @@ public class GCYLMaterials {
                 .build()
                 .setFormula("C2F6S2", true);
 
-        if (GCYLCore.isModLoaded("materialreplication")) {
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID)) {
             EnrichedNaquadahAlloy.addFlags(DISABLE_REPLICATION);
             Inconel792.addFlags(DISABLE_REPLICATION);
             EglinSteelBase.addFlags(DISABLE_REPLICATION);
@@ -10058,7 +10059,7 @@ public class GCYLMaterials {
                 .build()
                 .setFormula("?",true);
 
-        if (GCYLCore.isModLoaded("materialreplication")) {
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID)) {
             BariumTriflateSolution.addFlags(DISABLE_REPLICATION);
             BariumTriflate.addFlags(DISABLE_REPLICATION);
             BariumNitrate.addFlags(DISABLE_REPLICATION);
@@ -10669,7 +10670,7 @@ public class GCYLMaterials {
                 .components(OpVSuperconductorBase,1)
                 .build();
 
-        if (GCYLCore.isModLoaded("materialreplication")) {
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID)) {
             LVSuperconductorBase.addFlags(DISABLE_REPLICATION);
             MVSuperconductorBase.addFlags(DISABLE_REPLICATION);
             HVSuperconductorBase.addFlags(DISABLE_REPLICATION);
@@ -10742,7 +10743,7 @@ public class GCYLMaterials {
                 .build()
                 .setFormula(makeFancy(TextFormatting.OBFUSCATED+"?????????"));
 
-        if (GCYLCore.isModLoaded("materialreplication")) {
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID)) {
             Draconium.addFlags(DISABLE_REPLICATION);
             AwakenDraconium.addFlags(DISABLE_REPLICATION, DISABLE_DECONSTRUCTION);
             Chaos.addFlags(DISABLE_REPLICATION, DISABLE_DECONSTRUCTION);
@@ -10828,7 +10829,7 @@ public class GCYLMaterials {
                 .iconSet(FLUID)
                 .build();
 
-        if (GCYLCore.isModLoaded("supercritical")) {
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
             HotLiquidBoronTrioxide = new Material.Builder(++id, gcylId("hot_boron_trioxide"))
                     .liquid(new FluidBuilder().temperature(573))
                     .color(BoronTrioxide.getMaterialRGB() + 10)
@@ -10836,7 +10837,7 @@ public class GCYLMaterials {
                     .flags(DISABLE_DECOMPOSITION)
                     .iconSet(FLUID)
                     .build();
-            if (GCYLCore.isModLoaded("materialreplication"))
+            if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID))
                 HotLiquidBoronTrioxide.addFlags(DISABLE_REPLICATION);
         }
 
@@ -10845,7 +10846,7 @@ public class GCYLMaterials {
                 .color(0xFFFFFF)
                 .build();
 
-        if (GCYLCore.isModLoaded("materialreplication")) {
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID)) {
             RawBioGrowthMedium.addFlags(DISABLE_REPLICATION);
             SterileBioGrowthMedium.addFlags(DISABLE_REPLICATION);
             DuctileA356.addFlags(DISABLE_REPLICATION);

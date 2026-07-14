@@ -1,5 +1,7 @@
 package com.fulltrix.gcyl.recipes.chain;
 
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
@@ -152,14 +154,6 @@ public class FusionElementsChain {
                 .fluidOutputs(Hydrogen.getFluid(4000))
                 .buildAndRegister();
 
-        GAS_CENTRIFUGE_RECIPES.recipeBuilder().duration(210).EUt(30720)
-                .fluidInputs(TitaniumTetrafluoride.getFluid(10000))
-                .fluidOutputs(Titanium50Tetrafluoride.getFluid(518))
-                .fluidOutputs(TitaniumTetrafluoride.getFluid(9482))
-                .buildAndRegister();
-
-
-
         BLAST_RECIPES.recipeBuilder().duration(340).EUt(120)
                 .blastFurnaceTemp(Titanium.getBlastTemperature())
                 .fluidInputs(Titanium50Tetrafluoride.getFluid(1000))
@@ -216,6 +210,14 @@ public class FusionElementsChain {
                 .input(dust,SeaborgiumCarbide,2)
                 .output(ingotHot, TantalumHafniumSeaborgiumCarbide, 32)
                 .buildAndRegister();
+
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
+            GAS_CENTRIFUGE_RECIPES.recipeBuilder().duration(210).EUt(30720)
+                    .fluidInputs(TitaniumTetrafluoride.getFluid(10000))
+                    .fluidOutputs(Titanium50Tetrafluoride.getFluid(518))
+                    .fluidOutputs(TitaniumTetrafluoride.getFluid(9482))
+                    .buildAndRegister();
+        }
     }
 
     private static void advFusionRecipes() {
@@ -513,13 +515,6 @@ public class FusionElementsChain {
                 .fluidOutputs(Lutetium.getFluid(144 * 2))
                 .buildAndRegister();
 
-        // Should technically be Pu242
-        FUSION_RECIPES.recipeBuilder().duration(64).EUt(24576).EUToStart(150000000)
-                .fluidInputs(Plutonium244.getFluid(16))
-                .fluidInputs(Neon.getFluid(16))
-                .fluidOutputs(Rutherfordium.getFluid(16))
-                .buildAndRegister();
-
         FUSION_RECIPES.recipeBuilder().duration(96).EUt(49152).EUToStart(200000000)
                 .fluidInputs(Americium.getFluid(16))
                 .fluidInputs(Neon.getFluid(16))
@@ -580,5 +575,14 @@ public class FusionElementsChain {
                 .fluidInputs(Vanadium.getFluid(144 * 2))
                 .fluidOutputs(Roentgenium.getFluid(288 * 2))
                 .buildAndRegister();
+
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
+            // Should technically be Pu242
+            FUSION_RECIPES.recipeBuilder().duration(64).EUt(24576).EUToStart(150000000)
+                    .fluidInputs(Plutonium244.getFluid(16))
+                    .fluidInputs(Neon.getFluid(16))
+                    .fluidOutputs(Rutherfordium.getFluid(16))
+                    .buildAndRegister();
+        }
     }
 }

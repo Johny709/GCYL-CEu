@@ -38,6 +38,9 @@ import static gregtech.common.items.MetaItems.*;
 
 public class GCYLUtility {
 
+    public static final String SUPERCRITICAL_MODID = "supercritical";
+    public static final String MATERIAL_REPLICATION_MODID = "materialreplication";
+
     //TODO remove (THREADED TESTING MARK123)
 
     private static ThreadPoolExecutor GLOBAL_THREAD_POOL_EXECUTOR;
