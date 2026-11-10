@@ -40,7 +40,7 @@ import static gregtech.api.GregTechAPI.HEATING_COILS;
 
 @Mod(modid = GCYLCore.MODID, name = GCYLCore.NAME, version = GCYLCore.VERSION,
         dependencies = "required:forge@[14.23.5.2847,);" + "required-after:codechickenlib@[3.2.3,);" +
-                "required-after:modularui@[2.3,);" + GTValues.VERSION + "required-after:gcym@[1.3.,);" +
+                "required-after:modularui@[2.3,);" + "required-after:gregtech@[2.9.0,);" + "required-after:gcym@[1.3.,);" +
                 "required-after:groovyscript@[1.2,);" + "required-after:jei@[4.15.0,);")
 public class GCYLCore {
     public static final String MODID = "gcyl";
