@@ -1,6 +1,5 @@
 package com.fulltrix.gcyl;
 
-import com.fulltrix.gcyl.api.recipes.CachedRecipes;
 import com.fulltrix.gcyl.api.util.VirtualContainerRegistry;
 import com.fulltrix.gcyl.api.util.VirtualEnergyRegistry;
 import com.fulltrix.gcyl.api.util.VirtualResearchRegistry;
@@ -14,11 +13,9 @@ import com.fulltrix.gcyl.covers.GCYLCoverBehaviors;
 import com.fulltrix.gcyl.blocks.GCYLHeatingCoil;
 import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
 import com.fulltrix.gcyl.machines.GCYLTileEntities;
-import gregtech.GTInternalTags;
+import gregtech.api.GTValues;
 import gregtech.api.GregTechAPI;
 import gregtech.api.cover.CoverDefinition;
-import gregtech.api.worldgen.bedrockFluids.BedrockFluidVeinHandler;
-import gregtech.api.worldgen.bedrockFluids.BedrockFluidVeinSaveData;
 import gregtech.common.blocks.BlockWireCoil;
 import gregtech.common.blocks.MetaBlocks;
 import net.minecraft.world.World;
@@ -43,7 +40,7 @@ import static gregtech.api.GregTechAPI.HEATING_COILS;
 
 @Mod(modid = GCYLCore.MODID, name = GCYLCore.NAME, version = GCYLCore.VERSION,
         dependencies = "required:forge@[14.23.5.2847,);" + "required-after:codechickenlib@[3.2.3,);" +
-                "required-after:modularui@[2.3,);" + GTInternalTags.DEP_VERSION_STRING + "required-after:gcym@[1.3.,);" +
+                "required-after:modularui@[2.3,);" + GTValues.VERSION + "required-after:gcym@[1.3.,);" +
                 "required-after:groovyscript@[1.2,);" + "required-after:jei@[4.15.0,);")
 public class GCYLCore {
     public static final String MODID = "gcyl";
