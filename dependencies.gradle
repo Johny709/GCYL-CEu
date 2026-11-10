@@ -28,7 +28,7 @@ dependencies {
     api(rfg.deobf(project.files("lib/gregtech-1.12.2-2.9.0-beta-dev.jar"))) // GTCEu 2.9.0
     api(rfg.deobf(project.files("lib/supercritical-0.2.6-dev.jar")))
     api(rfg.deobf("curse.maven:codechickenlib-242818:2779849"))
-    api(rfg.deobf(project.files("lib/gcym-1.12.2-1.2.11-dev.jar"))) //GCYM 1.3
+    api(rfg.deobf(project.files("lib/gcym-1.12.2-1.3-dev.jar"))) //GCYM 1.3
     implementation("com.cleanroommc:groovyscript:1.4.3") { transitive = false }
     api(rfg.deobf(project.files("lib/MaterialReplication-1.2.7-dev.jar"))) //Material replication 1.3.0
     api("curse.maven:had-enough-items-557549:5906628")
