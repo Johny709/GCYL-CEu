@@ -5,7 +5,6 @@ import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.BoolValue;
@@ -31,6 +30,8 @@ import gregtech.api.metatileentity.multiblock.IMultiblockAbilityPart;
 import gregtech.api.metatileentity.multiblock.MultiblockAbility;
 import gregtech.api.mui.GTGuiTextures;
 import gregtech.api.mui.GTGuis;
+import gregtech.api.mui.IMetaTileEntityGuiHolder;
+import gregtech.api.mui.MetaTileEntityGuiData;
 import gregtech.api.util.GTHashMaps;
 import gregtech.client.renderer.texture.Textures;
 import gregtech.client.renderer.texture.cube.SimpleOverlayRenderer;
@@ -51,7 +52,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MetaTileEntityDrillHolder extends MetaTileEntityMultiblockNotifiablePart implements IMultiblockAbilityPart<IItemHandlerModifiable>, IControllable  {
+public class MetaTileEntityDrillHolder extends MetaTileEntityMultiblockNotifiablePart implements IMultiblockAbilityPart<IItemHandlerModifiable>,
+                                                                                                    IControllable,
+                                                                                                    IMetaTileEntityGuiHolder {
     private boolean workingEnabled;
     public MetaTileEntityDrillHolder(ResourceLocation metaTileEntityId) {
         super(metaTileEntityId, 0, false);
@@ -175,15 +178,9 @@ public class MetaTileEntityDrillHolder extends MetaTileEntityMultiblockNotifiabl
     }
 
     @Override
-    public boolean usesMui2() {
-        return true;
-    }
-
-
-    @Override
-    public ModularPanel buildUI(PosGuiData guiData, PanelSyncManager guiSyncManager, UISettings settings) {
+    public @NotNull ModularPanel buildUI(MetaTileEntityGuiData metaTileEntityGuiData, PanelSyncManager syncManager, UISettings uiSettings) {
         int rowSize = (int) Math.sqrt(getInventorySize());
-        guiSyncManager.registerSlotGroup("item_inv", rowSize);
+        syncManager.registerSlotGroup("item_inv", rowSize);
 
         int backgroundWidth = Math.max(
                 9 * 18 + 18 + 14 + 5,   // Player Inv width
@@ -203,7 +200,7 @@ public class MetaTileEntityDrillHolder extends MetaTileEntityMultiblockNotifiabl
         }
 
         BooleanSyncValue workingStateValue = new BooleanSyncValue(() -> workingEnabled, val -> workingEnabled = val);
-        guiSyncManager.syncValue("working_state", workingStateValue);
+        syncManager.syncValue("working_state", workingStateValue);
 
         boolean hasGhostCircuit = false;
 
