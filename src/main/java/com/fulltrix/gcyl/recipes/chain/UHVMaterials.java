@@ -1,14 +1,14 @@
 package com.fulltrix.gcyl.recipes.chain;
 
-import com.fulltrix.gcyl.item.GCYLExplosive;
-import com.fulltrix.gcyl.item.GCYLMetaBlocks;
-import com.fulltrix.gcyl.item.GCYLSimpleBlock;
+import com.fulltrix.gcyl.blocks.GCYLExplosive;
+import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
+import com.fulltrix.gcyl.blocks.GCYLSimpleBlock;
 import gregtech.api.fluids.store.FluidStorageKeys;
 import gregtech.common.items.MetaItems;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.*;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.*;
 import static gregicality.multiblocks.api.recipes.GCYMRecipeMaps.ALLOY_BLAST_RECIPES;
 import static gregtech.api.recipes.RecipeMaps.*;
 import static gregtech.api.unification.material.Materials.*;
@@ -100,16 +100,16 @@ public class UHVMaterials {
                 .buildAndRegister();
 
         ALLOY_BLAST_RECIPES.recipeBuilder().EUt(1000000).duration(160)
-                .input(dust, Rutherfordium)
-                .input(dust, Dubnium)
+                .input(dust, Rutherfordium, 4)
+                .input(dust, Dubnium, 4)
                 .circuitMeta(8)
                 .fluidOutputs(Fordnium.getFluid(1152))
                 .blastFurnaceTemp(11200)
                 .buildAndRegister();
 
         ALLOY_BLAST_RECIPES.recipeBuilder().EUt(1000000).duration(160)
-                .input(dust, Seaborgium)
-                .input(dust, Bohrium)
+                .input(dust, Seaborgium, 4)
+                .input(dust, Bohrium, 4)
                 .circuitMeta(8)
                 .fluidOutputs(Seabohrgium.getFluid(1152))
                 .blastFurnaceTemp(11200)
@@ -118,7 +118,8 @@ public class UHVMaterials {
         ADV_FUSION_RECIPES.recipeBuilder()
                 .fluidInputs(Seabohrgium.getFluid(288))
                 .fluidInputs(Fordnium.getFluid(288))
-                .fluidOutputs(SuperheavyMix.getFluid(1000))
+              //  .fluidOutputs(SuperheavyMix.getFluid(1000))
+                .fluidOutputs(SuperheavyMix.getFluid(576))
                 .EUt(4000000)
                 .AdvCoilTier(4)
                 .EUToStart(10000000000L)

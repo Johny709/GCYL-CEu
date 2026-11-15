@@ -1,12 +1,13 @@
 package com.fulltrix.gcyl.recipes.chain;
 
+import com.fulltrix.gcyl.GCYLConfig;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import gregtech.api.unification.OreDictUnifier;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.BIO_REACTOR_RECIPES;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.CHEMICAL_DEHYDRATOR_RECIPES;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.BIO_REACTOR_RECIPES;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.CHEMICAL_DEHYDRATOR_RECIPES;
 import static gregtech.api.recipes.RecipeMaps.*;
 import static gregtech.api.unification.material.Materials.*;
 import static gregtech.api.unification.ore.OrePrefix.*;
@@ -413,15 +414,18 @@ public class BrineChain {
                 .output(dust, Boron, 2)
                 .buildAndRegister();
 
-        // Na + H -> NaH
-        CHEMICAL_RECIPES.recipeBuilder().duration(140).EUt(30)
-                .input(dust, Sodium)
-                .fluidInputs(Hydrogen.getFluid(1000))
-                .output(dust, SodiumHydride, 2)
-                .buildAndRegister();
+        if(!GCYLConfig.recipes.useNewPlatinumChain) {
+            // Na + H -> NaH
+            CHEMICAL_RECIPES.recipeBuilder().duration(140).EUt(30)
+                    .input(dust, Sodium)
+                    .fluidInputs(Hydrogen.getFluid(1000))
+                    .output(dust, SodiumHydride, 2)
+                    .buildAndRegister();
+        }
 
         // C + 2S -> CS2
         BLAST_RECIPES.recipeBuilder().duration(120).EUt(120).blastFurnaceTemp(1000)
+                .circuitMeta(1)
                 .input(dust, Carbon)
                 .input(dust, Sulfur, 2)
                 .fluidOutputs(CarbonSulfide.getFluid(1000))

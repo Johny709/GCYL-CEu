@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.*;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.*;
 import static gregtech.api.recipes.RecipeMaps.*;
 import static gregtech.api.unification.material.Materials.*;
 import static gregtech.api.unification.ore.OrePrefix.dust;
@@ -373,12 +373,14 @@ public class WetwareChain {
                 .duration(100)
                 .buildAndRegister();
 
+        //TODO RIPPLE EFFECT IN BALANCING?
         // H2O + Na2CO3 -> NaHCO3 + NaOH
         LARGE_CHEMICAL_RECIPES.recipeBuilder().duration(140).EUt(30)
                 .fluidInputs(Water.getFluid(1000))
-                .input(dust, SodaAsh, 6)
-                .output(dust, SodiumBicarbonate, 6)
-                .output(dust, SodiumHydroxide, 3)
+                .circuitMeta(2)
+                .input(dust, SodaAsh, 1)
+                .output(dust, SodiumBicarbonate, 1) //6
+                .output(dust, SodiumHydroxide, 1) //3
                 .buildAndRegister();
 
         // NaHCO3 -> NaOH + CO2

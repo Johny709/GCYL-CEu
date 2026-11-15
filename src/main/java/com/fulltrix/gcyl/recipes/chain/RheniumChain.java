@@ -2,7 +2,7 @@ package com.fulltrix.gcyl.recipes.chain;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.UVA_HALIDE_LAMP;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.*;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.*;
 import static gregtech.api.recipes.RecipeMaps.*;
 import static gregtech.api.unification.material.Materials.*;
 import static gregtech.api.unification.ore.OrePrefix.dust;
@@ -269,16 +269,6 @@ public class RheniumChain {
                 .output(dust, SelectivelyMutatedCupriavidiusNecator, 1)
                 .EUt(30720)
                 .duration(20)
-                .buildAndRegister();
-
-        // 3C8H18O + NH3 -> 3H2O + C24H51N
-        CHEMICAL_RECIPES.recipeBuilder()
-                .fluidInputs(Octanol.getFluid(3000))
-                .fluidInputs(Ammonia.getFluid(1000))
-                .fluidOutputs(Water.getFluid(3000))
-                .fluidOutputs(Trioctylamine.getFluid(1000))
-                .EUt(480)
-                .duration(90)
                 .buildAndRegister();
 
         // 2C12H26 + 0.5C24H51N + 0.25C8H18O + 0.5C6H12O + 0.375CH3COOH + 0.375C5H12O -> ~4C11H24

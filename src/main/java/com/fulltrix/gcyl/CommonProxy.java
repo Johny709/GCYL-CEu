@@ -1,26 +1,36 @@
 package com.fulltrix.gcyl;
 
+import com.fulltrix.gcyl.api.recipes.CachedRecipes;
+import com.fulltrix.gcyl.api.recipes.GCYLMaterialRecipeHandler;
+import com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps;
+import com.fulltrix.gcyl.api.recipes.MixerPropertyAddition;
+import com.fulltrix.gcyl.api.recipes.properties.AdvFusionCoilProperty;
+import com.fulltrix.gcyl.api.recipes.properties.ComponentALProperty;
 import com.fulltrix.gcyl.api.util.VirtualContainerRegistry;
+import com.fulltrix.gcyl.api.util.VirtualEnergyRegistry;
+import com.fulltrix.gcyl.api.util.VirtualResearchRegistry;
+import com.fulltrix.gcyl.api.worldgen.VirtualOreVeinSaveData;
+import com.fulltrix.gcyl.api.worldgen.WorldGenRegister;
 import com.fulltrix.gcyl.item.GCYLCoreItems;
 import com.fulltrix.gcyl.materials.GCYLMaterialOverride;
 import com.fulltrix.gcyl.materials.GCYLMaterials;
-import com.fulltrix.gcyl.materials.GCYLNuclearMaterials;
 import com.fulltrix.gcyl.recipes.RecipeHandler;
-import com.fulltrix.gcyl.recipes.GCYLRecipeMaps;
+import com.fulltrix.gcyl.recipes.categories.RecipeOverrideLate;
 import com.fulltrix.gcyl.recipes.categories.handlers.ElectricImplosionHandler;
 import com.fulltrix.gcyl.recipes.categories.handlers.FuelHandler;
 import com.fulltrix.gcyl.recipes.categories.handlers.VoidMinerHandler;
 import com.fulltrix.gcyl.recipes.helper.GCYLComponents;
-import com.fulltrix.gcyl.recipes.recipeproperties.AdvFusionCoilProperty;
-import com.fulltrix.gcyl.worldgen.WorldGenRegister;
 import gregicality.multiblocks.common.GCYMConfigHolder;
+import gregtech.api.GTValues;
 import gregtech.api.GregTechAPI;
 import gregtech.api.block.VariantItemBlock;
 import gregtech.api.event.HighTierEvent;
+import gregtech.api.metatileentity.registry.MTEManager;
 import gregtech.api.recipes.GTRecipeInputCache;
-import gregtech.api.recipes.recipeproperties.FusionEUToStartProperty;
+import gregtech.api.recipes.properties.impl.FusionEUToStartProperty;
 import gregtech.api.unification.material.event.MaterialEvent;
 import gregtech.api.unification.material.event.MaterialRegistryEvent;
+import gregtech.api.unification.material.event.PostMaterialEvent;
 import gregtech.common.ConfigHolder;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -41,12 +51,16 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.io.IOException;
 import java.util.function.Function;
 
-import static com.fulltrix.gcyl.item.GCYLMetaBlocks.*;
+import static com.fulltrix.gcyl.blocks.GCYLMetaBlocks.*;
 
 @Mod.EventBusSubscriber(modid = GCYLCore.MODID)
 public class CommonProxy {
     public void preInit() {
         GCYLCoreItems.init();
+    }
+
+    public void postInit() {
+        CachedRecipes.cacheRecipesForOPF();
     }
 
     private static void registerRecipesAfterCT() {
@@ -63,7 +77,16 @@ public class CommonProxy {
         //Force enable high tier content, regardless of config option
         event.enableHighTier();
 
+        if (GCYLConfig.recipes.hardMode) {
+            GCYLConfig.recipes.gcylCasingsPerCraftOverride = 1;
+            GCYLConfig.recipes.circuitsPerCraft = 1;
+            GCYLConfig.recipes.circuitCoresPerCraft = 1;
+        }
+
+        ConfigHolder.recipes.casingsPerCraft = GCYLConfig.recipes.gcylCasingsPerCraftOverride;
+
         ConfigHolder.machines.enableHighTierSolars = true;
+        ConfigHolder.recipes.harderCircuitRecipes = false;
 
         //Force enable tiered casings from GCYM
         GCYMConfigHolder.globalMultiblocks.enableTieredCasings = true;
@@ -73,15 +96,22 @@ public class CommonProxy {
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void registerMaterials(MaterialEvent event) {
-        //TJFMaterials.registerNuclearMaterials();
-        GCYLNuclearMaterials.registerNuclear();
-        GCYLMaterials.register();
-        GCYLMaterials.register2();
-        GCYLMaterials.registerSuperconductors();
-        GCYLMaterials.initDEMaterials();
 
-        GCYLMaterialOverride.materialChanges();
-        GCYLMaterialOverride.tempMaterialModifications();
+        GCYLMaterials.init();
+
+
+
+        GCYLMaterialOverride.init();
+    }
+
+    @SubscribeEvent
+    public static void registerMTERegistry(MTEManager.MTERegistryEvent event) {
+        GregTechAPI.mteManager.createRegistry(GCYLCore.MODID);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void registerMaterialsPost(PostMaterialEvent event) {
+        MixerPropertyAddition.init();
     }
 
     @SubscribeEvent
@@ -97,6 +127,7 @@ public class CommonProxy {
         registry.register(HEATING_COIL);
         registry.register(MULTIBLOCK_CASING2);
         //registry.register(TRANSPARENT_CASING);
+        registry.register(FUSION_COILS);
         registry.register(FUSION_CASING);
         registry.register(VACUUM_CASING);
         registry.register(DIVERTOR_CASING);
@@ -106,6 +137,10 @@ public class CommonProxy {
         registry.register(METAL_CASING_1);
         registry.register(METAL_CASING_2);
         registry.register(REACTOR_CASING);
+        registry.register(GCYL_CLEANROOM_CASING);
+        registry.register(GCYL_COMPONENT_AL_CASING);
+        registry.register(ELEVATOR_CASING);
+        registry.register(ELEVATOR_CASING_TIERED);
     }
 
     @SubscribeEvent
@@ -114,6 +149,7 @@ public class CommonProxy {
         registry.register(createItemBlock(HEATING_COIL, VariantItemBlock::new));
         registry.register(createItemBlock(MULTIBLOCK_CASING2, VariantItemBlock::new));
         //registry.register(createItemBlock(TRANSPARENT_CASING, VariantItemBlock::new));
+        registry.register(createItemBlock(FUSION_COILS, VariantItemBlock::new));
         registry.register(createItemBlock(FUSION_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(VACUUM_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(DIVERTOR_CASING, VariantItemBlock::new));
@@ -123,6 +159,10 @@ public class CommonProxy {
         registry.register(createItemBlock(METAL_CASING_1, VariantItemBlock::new));
         registry.register(createItemBlock(METAL_CASING_2, VariantItemBlock::new));
         registry.register(createItemBlock(REACTOR_CASING, VariantItemBlock::new));
+        registry.register(createItemBlock(GCYL_CLEANROOM_CASING, VariantItemBlock::new));
+        registry.register(createItemBlock(GCYL_COMPONENT_AL_CASING, VariantItemBlock::new));
+        registry.register(createItemBlock(ELEVATOR_CASING, VariantItemBlock::new));
+        registry.register(createItemBlock(ELEVATOR_CASING_TIERED, VariantItemBlock::new));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -134,11 +174,11 @@ public class CommonProxy {
 
     @SubscribeEvent
     public static void createMaterialRegistry(MaterialRegistryEvent event) {
-        GregTechAPI.materialManager.createRegistry(Tags.MODID);
+        GregTechAPI.materialManager.createRegistry(GCYLCore.MODID);
     }
 
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
 
         AdvFusionCoilProperty.registerAdvFusionTier(1, "1");
@@ -152,7 +192,13 @@ public class CommonProxy {
         FusionEUToStartProperty.registerFusionTier(12, "(Adv MK4)");
         FusionEUToStartProperty.registerFusionTier(13, "(Adv MK5)");
 
+        for(int i = 1; i < GTValues.VN.length; i++) {
+            ComponentALProperty.registerCasingTier(i, GTValues.VN[i]);
+        }
+
         GCYLRecipeMaps.modifyMaps();
+
+        GCYLMaterialRecipeHandler.register();
 
         RecipeHandler.initRecipes();
         RecipeHandler.initChains();
@@ -162,17 +208,30 @@ public class CommonProxy {
         //RecipeHandler.registerLargeMachineRecipes();
     }
 
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void lateRecipeOverride(RegistryEvent.Register<IRecipe> event) {
+        RecipeOverrideLate.init();
+    }
+
     @SubscribeEvent
     public static void onWorldLoadEvent(WorldEvent.Load event) {
         VirtualContainerRegistry.initializeStorage(event.getWorld());
+        VirtualEnergyRegistry.initializeStorage(event.getWorld());
+        VirtualResearchRegistry.initializeStorage(event.getWorld());
+
+        VirtualOreVeinSaveData.setDirty();
     }
 
-
+    @SubscribeEvent
+    public static void onWorldSaveEvent(WorldEvent.Save event) {
+        VirtualOreVeinSaveData.setDirty();
+    }
 
     @SubscribeEvent
     public static void registerOrePrefix(RegistryEvent.Register<IRecipe> event) {
         //NuclearHandler.register();
         VoidMinerHandler.register();
+        CachedRecipes.register();
 
         //TODO: remove ore prefixes from hidden & removed circuits
 

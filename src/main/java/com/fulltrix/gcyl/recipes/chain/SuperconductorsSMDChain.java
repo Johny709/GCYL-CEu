@@ -1,7 +1,7 @@
 package com.fulltrix.gcyl.recipes.chain;
 
-import com.fulltrix.gcyl.item.GCYLExplosive;
-import com.fulltrix.gcyl.item.GCYLMetaBlocks;
+import com.fulltrix.gcyl.blocks.GCYLExplosive;
+import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
 import gregtech.api.fluids.store.FluidStorageKeys;
 import gregtech.api.items.metaitem.MetaItem;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.INDUCTOR;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.*;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.*;
 import static gregicality.multiblocks.api.recipes.GCYMRecipeMaps.ALLOY_BLAST_RECIPES;
 import static gregtech.api.recipes.RecipeMaps.*;
 import static gregtech.api.unification.material.MarkerMaterials.Color.Magenta;
@@ -260,6 +260,12 @@ public class SuperconductorsSMDChain {
                 .buildAndRegister();
 
          */
+        BLAST_RECIPES.recipeBuilder().duration(500).EUt(120).blastFurnaceTemp(2400)
+                .input(dust, Tungsten, 9)
+                .input(dust, Thorium)
+                .output(ingot, ThoriumDopedTungsten, 10)
+                .buildAndRegister();
+        //////////////////////////////////////////////////////////////////////////
 
         BLAST_RECIPES.recipeBuilder().duration(270).EUt(120).blastFurnaceTemp(1800)
                 .input(dust, Quartzite)
@@ -623,7 +629,7 @@ public class SuperconductorsSMDChain {
                 .fluidInputs(HydrogenCyanide.getFluid(3000))
                 .fluidInputs(Water.getFluid(3000))
                 .notConsumable(dust, PotassiumDichromate)
-                .circuitMeta(1)
+                .circuitMeta(2)
                 .fluidOutputs(CitricAcid.getFluid(1000))
                 .fluidOutputs(AmmoniumChloride.getFluid(3000))
                 .buildAndRegister();
@@ -665,6 +671,12 @@ public class SuperconductorsSMDChain {
                 .input(dust, Glucose, 24)
                 .fluidOutputs(Water.getFluid(3000))
                 .fluidOutputs(OxalicAcid.getFluid(3000))
+                .buildAndRegister();
+
+        FLUID_SOLIDFICATION_RECIPES.recipeBuilder().duration(20).EUt(8)
+                .notConsumable(SHAPE_MOLD_BALL)
+                .fluidInputs(OxalicAcid.getFluid(144))
+                .output(dust, OxalicAcid)
                 .buildAndRegister();
 
         // 2C2H2O4 + 2O + Ac -> Ac(C2O4)2 + 2H2O
@@ -863,6 +875,8 @@ public class SuperconductorsSMDChain {
                 .buildAndRegister();
 
         // 4B + 3C -> B4C3
+        //TODO Nuclear
+        /*
         BLAST_RECIPES.recipeBuilder().duration(550).EUt(120).blastFurnaceTemp(4000)
                 .input(dust, Boron, 4)
                 .input(dust, Carbon, 3)
@@ -875,6 +889,7 @@ public class SuperconductorsSMDChain {
                 .input(dust, BoronCarbide, 7)
                 .output(dust, BoronFranciumCarbide, 15)
                 .buildAndRegister();
+         */
 
         // At + H2SO4 -> [At + H2O + SO3]
         MIXER_RECIPES.recipeBuilder().duration(140).EUt(7680)

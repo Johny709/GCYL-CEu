@@ -1,8 +1,8 @@
 package com.fulltrix.gcyl.recipes.chain;
 
-import com.fulltrix.gcyl.item.GCYLExplosive;
-import com.fulltrix.gcyl.item.GCYLMetaBlocks;
-import com.fulltrix.gcyl.item.fusion.GCYLFusionCasing;
+import com.fulltrix.gcyl.blocks.GCYLExplosive;
+import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
+import com.fulltrix.gcyl.blocks.fusion.GCYLFusionCoils;
 import gregtech.api.fluids.store.FluidStorageKeys;
 import gregtech.api.items.metaitem.MetaItem;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
@@ -10,8 +10,7 @@ import gregtech.api.unification.material.MarkerMaterials;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
-import static com.fulltrix.gcyl.materials.GCYLNuclearMaterials.Plutonium;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.*;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.*;
 import static gregtech.api.recipes.RecipeMaps.*;
 import static gregtech.api.unification.material.MarkerMaterials.Tier.UIV;
 import static gregtech.api.unification.material.Materials.*;
@@ -126,7 +125,9 @@ public class UltimateMaterials {
                 .fluidInputs(Plutonium.getFluid(144))
                 .fluidInputs(Mendelevium.getFluid(144))
                 .fluidInputs(Einsteinium.getFluid(144))
-                .output(dust, Actinoids, 13)
+                .fluidInputs(Lawrencium.getFluid(144))
+                .fluidInputs(Nobelium.getFluid(144))
+                .output(dust, Actinoids, 15)
                 .buildAndRegister();
 
         ADVANCED_MIXER_RECIPES.recipeBuilder().duration(450).EUt(250000)
@@ -159,7 +160,7 @@ public class UltimateMaterials {
                 .buildAndRegister();
 
         ADVANCED_MIXER_RECIPES.recipeBuilder().duration(360).EUt(5400000)
-                .input(dust, SuperheavyLAlloy, 7)
+                .input(dust, SuperheavyLAlloy, 8)
                 .input(dust, SuperheavyHAlloy, 7)
                 .input(dust, Alkalis, 14)
                 .input(dust, RefractoryMetals, 7)
@@ -167,10 +168,10 @@ public class UltimateMaterials {
                 .input(dust, PreciousMetals, 9)
                 .input(dust, PostTransitionMetals, 14)
                 .input(dust, Lanthanoids, 15)
-                .input(dust, Actinoids, 13)
+                .input(dust, Actinoids, 15)
                 .fluidInputs(NonMetals.getFluid(15000))
                 .fluidInputs(NobleGases.getFluid(6000))
-                .output(dust, Periodicium, 115)
+                .output(dust, Periodicium, 118)
                 .buildAndRegister();
         
 
@@ -194,7 +195,7 @@ public class UltimateMaterials {
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(150).EUt(15000000)
                 .input(frameGt, QCDMatter)
-                .inputs(GCYLMetaBlocks.FUSION_CASING.getItemVariant(GCYLFusionCasing.CasingType.ADV_FUSION_COIL_3))
+                .inputs(GCYLMetaBlocks.FUSION_COILS.getItemVariant(GCYLFusionCoils.CasingType.ADV_FUSION_COIL_3))
                 .inputs(ELECTRIC_PUMP_UXV.getStackForm(2))
                 .input(circuit, UIV)
                 .input(pipeLargeFluid, Neutronium, 4)

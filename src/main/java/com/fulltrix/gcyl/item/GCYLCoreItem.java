@@ -1,11 +1,14 @@
 package com.fulltrix.gcyl.item;
 
+import com.fulltrix.gcyl.api.items.WirelessElectricStats;
 import com.fulltrix.gcyl.item.behaviors.MinerDataItemBehavior;
+import gregtech.api.GTValues;
 import gregtech.api.items.metaitem.StandardMetaItem;
 import gregtech.api.unification.material.MarkerMaterials;
 import gregtech.api.unification.material.MarkerMaterials.Tier;
 import gregtech.api.unification.ore.OrePrefix;
 import gregtech.common.items.behaviors.DataItemBehavior;
+import net.minecraft.item.ItemStack;
 
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
 import static gregtech.api.unification.material.MarkerMaterials.Tier.*;
@@ -102,6 +105,7 @@ public class GCYLCoreItem extends StandardMetaItem {
         BOULE_RUTHERFORDIUM = addItem(341, "boule.rutherfordium");
 
         UNSTABLE_STAR = addItem(343, "unstable.star");
+        NUCLEAR_STAR = addItem(344, "nuclear.star");
 
         CONVEYOR_MODULE_MAX = addItem(353, "conveyor.module.max");
 
@@ -374,9 +378,84 @@ public class GCYLCoreItem extends StandardMetaItem {
 
         COVER_ENDER_ITEM_LINK = addItem(620, "cover.ender.item_link");
 
+        VOLTAGE_COIL_UHV = addItem(621, "voltage_coil.uhv");
+        VOLTAGE_COIL_UEV = addItem(622, "voltage_coil.uev");
+        VOLTAGE_COIL_UIV = addItem(623, "voltage_coil.uiv");
+        VOLTAGE_COIL_UXV = addItem(624, "voltage_coil.uxv");
+        VOLTAGE_COIL_OpV = addItem(625, "voltage_coil.opv");
+        VOLTAGE_COIL_MAX = addItem(626, "voltage_coil.max");
+
+        BIO_CELLS = addItem(627, "bio_cells");
+        BIO_BOARD = addItem(628, "board.bio");
+        BIO_CIRCUIT_BOARD = addItem(629, "board_circuit.bio");
+        ADVANCED_CRYSTAL_SOC = addItem(630, "crystal.asoc");
+        LIVING_SOC = addItem(631, "living.soc");
+        LIVING_BIO_SOC = addItem(632, "living_bio.soc");
+        BIO_WAFER = addItem(633, "wafer.bio");
+
+        NPIC_WAFER = addItem(634,"wafer.npic");
+        PPIC_WAFER = addItem(635,"wafer.ppic");
+        QPIC_WAFER = addItem(636,"wafer.qpic");
+        NPIC = addItem(637,"npic");
+        PPIC = addItem(638,"ppic");
+        QPIC = addItem(639,"qpic");
+
+        WIRELESS_BATTERY_UV = addItem(640, "wireless_battery_uv").addComponents(WirelessElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)).setModelAmount(8);
+        /*
+        641
+        642
+        643
+        644
+        645
+        646
+         */
+
+        MINING_DRONE_1 = addItem(647, "mining_drone.1");
+        MINING_DRONE_2 = addItem(648, "mining_drone.2");
+        MINING_DRONE_3 = addItem(649, "mining_drone.3");
+        MINING_DRONE_4 = addItem(650, "mining_drone.4");
+        MINING_DRONE_5 = addItem(651, "mining_drone.5");
+        MINING_DRONE_6 = addItem(652, "mining_drone.6");
+        MINING_DRONE_7 = addItem(653, "mining_drone.7");
+        MINING_DRONE_8 = addItem(654, "mining_drone.8");
+        MINING_DRONE_9 = addItem(655, "mining_drone.9");
+        MINING_DRONE_10 = addItem(656, "mining_drone.10");
+        MINING_DRONE_11 = addItem(657, "mining_drone.11");
+        MINING_DRONE_12 = addItem(658, "mining_drone.12");
+        MINING_DRONE_13 = addItem(659, "mining_drone.13");
+        MINING_DRONE_14 = addItem(660, "mining_drone.14");
+
+
+        GENERIC_CIRCUIT_ULV = addItem(661, "generic_circuit.ulv").setUnificationData(OrePrefix.circuit, Tier.ULV);
+        GENERIC_CIRCUIT_LV = addItem(662, "generic_circuit.lv").setUnificationData(OrePrefix.circuit, Tier.LV);
+        GENERIC_CIRCUIT_MV = addItem(663, "generic_circuit.mv").setUnificationData(OrePrefix.circuit, Tier.MV);
+        GENERIC_CIRCUIT_HV = addItem(664, "generic_circuit.hv").setUnificationData(OrePrefix.circuit, Tier.HV);
+        GENERIC_CIRCUIT_EV = addItem(665, "generic_circuit.ev").setUnificationData(OrePrefix.circuit, Tier.EV);
+        GENERIC_CIRCUIT_IV = addItem(666, "generic_circuit.iv").setUnificationData(OrePrefix.circuit, Tier.IV);
+        GENERIC_CIRCUIT_LuV = addItem(667, "generic_circuit.luv").setUnificationData(OrePrefix.circuit, Tier.LuV);
+        GENERIC_CIRCUIT_ZPM = addItem(668, "generic_circuit.zpm").setUnificationData(OrePrefix.circuit, Tier.ZPM);
+        GENERIC_CIRCUIT_UV = addItem(669, "generic_circuit.uv").setUnificationData(OrePrefix.circuit, Tier.UV);
+        GENERIC_CIRCUIT_UHV = addItem(670, "generic_circuit.uhv").setUnificationData(OrePrefix.circuit, Tier.UHV);
+        GENERIC_CIRCUIT_UEV = addItem(671, "generic_circuit.uev").setUnificationData(OrePrefix.circuit, Tier.UEV);
+        GENERIC_CIRCUIT_UIV = addItem(672, "generic_circuit.uiv").setUnificationData(OrePrefix.circuit, Tier.UIV);
+        GENERIC_CIRCUIT_UXV = addItem(673, "generic_circuit.uxv").setUnificationData(OrePrefix.circuit, Tier.UXV);
+        GENERIC_CIRCUIT_OpV = addItem(674, "generic_circuit.opv").setUnificationData(OrePrefix.circuit, Tier.OpV);
+        GENERIC_CIRCUIT_MAX = addItem(675, "generic_circuit.max").setUnificationData(OrePrefix.circuit, Tier.MAX);
+
+
+
+
         PYROLYTIC_CARBON = addItem(16, "pyrolytic_carbon");
         MICA_SHEET = addItem(26, "mica_sheet");
         MICA_INSULATOR_SHEET = addItem(27, "mica_insulator_sheet");
         MICA_INSULATOR_FOIL = addItem(28, "mica_insulator_foil");
+
+    }
+    @Override
+    public boolean hasEffect(ItemStack itemStack) {
+        return super.hasEffect(itemStack)
+                || itemStack.getMetadata() == UNSTABLE_STAR.getStackForm().getMetadata()
+                || itemStack.getMetadata() == NUCLEAR_STAR.getStackForm().getMetadata()
+                || itemStack.getMetadata() == WIRELESS_BATTERY_UV.getStackForm().getMetadata();
     }
 }

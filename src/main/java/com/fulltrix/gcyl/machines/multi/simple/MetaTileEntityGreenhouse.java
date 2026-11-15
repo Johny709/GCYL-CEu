@@ -6,9 +6,9 @@ import gregtech.api.metatileentity.interfaces.IGregTechTileEntity;
 import gregtech.api.metatileentity.multiblock.IMultiblockPart;
 import gregtech.api.pattern.BlockPattern;
 import gregtech.api.pattern.FactoryBlockPattern;
-import gregtech.api.recipes.RecipeMap;
 import gregtech.client.renderer.ICubeRenderer;
 import gregtech.client.renderer.texture.Textures;
+import gregtech.common.ConfigHolder;
 import gregtech.common.blocks.BlockGlassCasing;
 import gregtech.common.blocks.BlockMachineCasing;
 import gregtech.common.blocks.MetaBlocks;
@@ -19,9 +19,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.GREENHOUSE_RECIPES;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.GREENHOUSE_RECIPES;
 
-//TODO: GET A MATCHING TEXTURE FOR THE CASINGS AND BASE TEXTURE
+//TODO: add tooltips and information
 public class MetaTileEntityGreenhouse extends GCYMRecipeMapMultiblockController {
 
     private final int tier;
@@ -56,9 +56,16 @@ public class MetaTileEntityGreenhouse extends GCYMRecipeMapMultiblockController 
         return false;
     }
 
+    @Override
+    public int getDefaultPaintingColor() {
+        return ConfigHolder.client.defaultPaintingColor;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public ICubeRenderer getBaseTexture(IMultiblockPart sourcePart) {
+        if (sourcePart instanceof MetaTileEntity tileEntity)
+            tileEntity.setPaintingColor(ConfigHolder.client.defaultPaintingColor);
         return tier > 2 ? Textures.VOLTAGE_CASINGS[8] : Textures.VOLTAGE_CASINGS[0];
     }
 

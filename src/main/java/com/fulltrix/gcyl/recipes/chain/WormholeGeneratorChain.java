@@ -1,13 +1,13 @@
 package com.fulltrix.gcyl.recipes.chain;
 
-import com.fulltrix.gcyl.item.GCYLExplosive;
-import com.fulltrix.gcyl.item.GCYLMetaBlocks;
+import com.fulltrix.gcyl.blocks.GCYLExplosive;
+import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
 import gregtech.api.fluids.store.FluidStorageKeys;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.PLASMA_CONDENSER_RECIPES;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.STELLAR_FORGE_RECIPES;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.PLASMA_CONDENSER_RECIPES;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.STELLAR_FORGE_RECIPES;
 import static gregtech.api.recipes.RecipeMaps.*;
 import static gregtech.api.unification.material.Materials.*;
 import static gregtech.api.unification.ore.OrePrefix.*;

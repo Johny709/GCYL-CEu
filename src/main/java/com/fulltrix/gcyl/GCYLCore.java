@@ -1,38 +1,55 @@
 package com.fulltrix.gcyl;
 
+import com.fulltrix.gcyl.api.util.VirtualContainerRegistry;
+import com.fulltrix.gcyl.api.util.VirtualEnergyRegistry;
+import com.fulltrix.gcyl.api.util.VirtualResearchRegistry;
+import com.fulltrix.gcyl.api.worldgen.PacketVirtualOreVeinList;
+import com.fulltrix.gcyl.api.worldgen.VirtualOreVeinHandler;
+import com.fulltrix.gcyl.api.worldgen.VirtualOreVeinSaveData;
+import com.fulltrix.gcyl.blocks.component_al.GCYLComponentALCasing;
+import com.fulltrix.gcyl.blocks.elevator.ElevatorCasingTiered;
+import com.fulltrix.gcyl.blocks.metal.GCYLCleanroomCasing;
 import com.fulltrix.gcyl.covers.GCYLCoverBehaviors;
-import com.fulltrix.gcyl.item.GCYLHeatingCoil;
-import com.fulltrix.gcyl.item.GCYLMetaBlocks;
+import com.fulltrix.gcyl.blocks.GCYLHeatingCoil;
+import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
 import com.fulltrix.gcyl.machines.GCYLTileEntities;
-import gregtech.GTInternalTags;
+import gregtech.api.GTValues;
 import gregtech.api.GregTechAPI;
 import gregtech.api.cover.CoverDefinition;
 import gregtech.common.blocks.BlockWireCoil;
 import gregtech.common.blocks.MetaBlocks;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-import static com.fulltrix.gcyl.item.GCYLMetaBlocks.HEATING_COIL;
+import static com.fulltrix.gcyl.api.GCYLAPI.*;
+import static com.fulltrix.gcyl.blocks.GCYLMetaBlocks.*;
 import static gregtech.api.GregTechAPI.COVER_REGISTRY;
 import static gregtech.api.GregTechAPI.HEATING_COILS;
 
 @Mod(modid = GCYLCore.MODID, name = GCYLCore.NAME, version = GCYLCore.VERSION,
-        dependencies = GTInternalTags.DEP_VERSION_STRING)
+        dependencies = "required:forge@[14.23.5.2847,);" + "required-after:codechickenlib@[3.2.3,);" +
+                "required-after:modularui@[2.3,);" + "required-after:gregtech@[2.9.0,);" + "required-after:gcym@[1.3.,);" +
+                "required-after:groovyscript@[1.2,);" + "required-after:jei@[4.15.0,);")
 public class GCYLCore {
-    public static final String MODID = Tags.MODID;
-    public static final String NAME = Tags.MODNAME;
-    public static final String VERSION = Tags.VERSION;
+    public static final String MODID = "gcyl";
+    public static final String NAME = "GCYL: CEu";
+    public static final String VERSION = "0.1.0";
     @SidedProxy(modId = MODID, clientSide = "com.fulltrix.gcyl.ClientProxy", serverSide = "com.fulltrix.gcyl.CommonProxy")
     public static CommonProxy proxy;
+
+    private static final ConcurrentMap<String, Boolean> IS_MOD_LOADED_CACHE = new ConcurrentHashMap<>();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -45,10 +62,23 @@ public class GCYLCore {
             HEATING_COILS.put(HEATING_COIL.getState(type), type);
         }
 
+        for (GCYLComponentALCasing.CasingType type : GCYLComponentALCasing.CasingType.values()) {
+            COMPONENT_AL_CASINGS.put(GCYL_COMPONENT_AL_CASING.getState(type), type);
+        }
+
+        for (GCYLCleanroomCasing.CasingType type : GCYLCleanroomCasing.CasingType.values()) {
+            GCYL_FILTER_CASINGS.put(GCYL_CLEANROOM_CASING.getState(type), type);
+        }
+
+        for(ElevatorCasingTiered.CasingType type : ElevatorCasingTiered.CasingType.values()) {
+            ELEVATOR_MOTORS.put(ELEVATOR_CASING_TIERED.getState(type), type);
+        }
+
+
         HEATING_COILS.remove(MetaBlocks.WIRE_COIL.getState(BlockWireCoil.CoilType.TRINIUM),BlockWireCoil.CoilType.TRINIUM);
         HEATING_COILS.remove(MetaBlocks.WIRE_COIL.getState(BlockWireCoil.CoilType.TRITANIUM),BlockWireCoil.CoilType.TRITANIUM);
 
-
+        GregTechAPI.networkHandler.registerPacket(PacketVirtualOreVeinList.class);
     }
 
     @EventHandler
@@ -64,7 +94,10 @@ public class GCYLCore {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        //CommonProxy.postInit();
+        proxy.postInit();
+
+        VirtualOreVeinHandler.recalculateChances(true);
+
     }
 
     @EventHandler
@@ -72,7 +105,41 @@ public class GCYLCore {
     public void serverStarting(FMLServerStartingEvent event) {
     }
 
+    @EventHandler
+    public void serverStarted(FMLServerStartedEvent event) {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
+            if (!world.isRemote) {
+                VirtualOreVeinSaveData saveData = (VirtualOreVeinSaveData) world
+                        .loadData(VirtualOreVeinSaveData.class, VirtualOreVeinSaveData.dataName);
+                if (saveData == null) {
+                    saveData = new VirtualOreVeinSaveData(VirtualOreVeinSaveData.dataName);
+                    world.setData(VirtualOreVeinSaveData.dataName, saveData);
+                    // the save data does not yet exist, use the latest version number
+                    VirtualOreVeinHandler.saveDataVersion = VirtualOreVeinHandler.MAX_VIRTUAL_ORE_SAVE_DATA_VERSION;
+                }
+                VirtualOreVeinSaveData.setInstance(saveData);
+            }
+        }
+    }
+
     static {
         FluidRegistry.enableUniversalBucket();
+    }
+
+    @EventHandler
+    public void serverStopped(FMLServerStoppedEvent event) {
+        VirtualEnergyRegistry.clearMaps();
+        VirtualContainerRegistry.clearMaps();
+        VirtualResearchRegistry.clearMaps();
+    }
+
+    public static boolean isModLoaded(String modid) {
+        if (IS_MOD_LOADED_CACHE.containsKey(modid)) {
+            return IS_MOD_LOADED_CACHE.get(modid);
+        }
+        boolean isLoaded = Loader.instance().getIndexedModList().containsKey(modid);
+        IS_MOD_LOADED_CACHE.put(modid, isLoaded);
+        return isLoaded;
     }
 }

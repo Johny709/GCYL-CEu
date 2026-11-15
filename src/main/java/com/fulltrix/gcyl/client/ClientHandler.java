@@ -1,8 +1,11 @@
 package com.fulltrix.gcyl.client;
 
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.fulltrix.gcyl.GCYLCore;
+import gregtech.api.gui.resources.TextureArea;
 import gregtech.client.renderer.texture.cube.OrientedOverlayRenderer;
 import gregtech.client.renderer.texture.cube.SimpleOverlayRenderer;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -22,6 +25,7 @@ public class ClientHandler {
     public static SimpleOverlayRenderer HASTELLOY_N_CASING;
     public static SimpleOverlayRenderer INCOLOY_813_CASING;
     public static SimpleOverlayRenderer NAQUADRIA_CASING;
+    public static SimpleOverlayRenderer IRIDIUM_CASING;
     public static SimpleOverlayRenderer HYPER_CASING;
     public static SimpleOverlayRenderer HYPER_CASING_2;
     public static SimpleOverlayRenderer ENRICHED_NAQUADAH_ALLOY_CASING;
@@ -30,11 +34,35 @@ public class ClientHandler {
     public static SimpleOverlayRenderer NITINOL_60_CASING;
     public static SimpleOverlayRenderer HASTELLOY_K243_CASING;
     public static SimpleOverlayRenderer MAINTENANCE_OVERLAY_STERILE_CLEANING;
+    public static SimpleOverlayRenderer MAINTENANCE_OVERLAY_ISO3_CLEANING;
+    public static SimpleOverlayRenderer MAINTENANCE_OVERLAY_ISO2_CLEANING;
+    public static SimpleOverlayRenderer MAINTENANCE_OVERLAY_ISO1_CLEANING;
     public static SimpleOverlayRenderer CLADDED_REACTOR_CASING;
     public static SimpleOverlayRenderer ENDER_ITEM_LINK;
+    public static SimpleOverlayRenderer WIRELESS_ENERGY_HATCH;
+    public static SimpleOverlayRenderer WIRELESS_ENERGY_HATCH_4A;
+    public static SimpleOverlayRenderer WIRELESS_ENERGY_HATCH_16A;
+    public static SimpleOverlayRenderer WIRELESS_ENERGY_HATCH_OFF;
+    public static SimpleOverlayRenderer WIRELESS_DATA_HATCH;
+    public static SimpleOverlayRenderer SEABORGIUM_SUBSTATION_CASING;
+    public static SimpleOverlayRenderer MARAGING_STEEL_250_CASING;
+    public static SimpleOverlayRenderer INCONEL_625_CASING;
+    public static SimpleOverlayRenderer ELEVATOR_CASING;
+    public static SimpleOverlayRenderer PUMP_MODULE_OVERLAY;
+    public static SimpleOverlayRenderer MINING_MODULE_OVERLAY;
+    public static SimpleOverlayRenderer ASSEMBLER_MODULE_OVERLAY;
 
     public static OrientedOverlayRenderer NAQADAH_OVERLAY;
     public static OrientedOverlayRenderer ROCKET_OVERLAY;
+
+    public static final TextureArea PROGRESS_BAR_COMPONENT_AL = TextureArea.fullImage("textures/gui/progress_bar/progress_bar_component_al.png");
+    public static final TextureArea PROGRESS_BAR_MINING_MODULE = TextureArea.fullImage("textures/gui/progress_bar/progress_bar_mining_module.png");
+    public static final UITexture BUTTON_ELEVATOR_EXTENSION = UITexture.fullImage("textures/gui/widget/space_elevator_extension.png");
+    public static  final UITexture BUTTON_ELEVATOR_TELEPORT = UITexture.fullImage("textures/gui/widget/planet_teleport.png");
+    public static final UITexture BUTTON_ENABLE_STATIC = UITexture.fullImage("textures/gui/widget/button_power_enable_static.png");
+    public static final UITexture BUTTON_DISABLE_STATIC = UITexture.fullImage("textures/gui/widget/button_power_disable_static.png");
+    public static final UITexture BUTTON_CYCLE = UITexture.fullImage("textures/gui/widget/button_cycle.png");
+    public static final UITexture BUTTON_WHITE_BLACK_LIST = UITexture.fullImage("textures/gui/widget/button_white_black_list.png");
 
 
     private ClientHandler() {
@@ -49,6 +77,7 @@ public class ClientHandler {
 
         BIO_REACTOR = new SimpleOverlayRenderer("casings/solid/bio_reactor_casing");
         FUSION_TEXTURE = new SimpleOverlayRenderer("casings/fusion/machine_casing_fusion_glass");
+        SEABORGIUM_SUBSTATION_CASING = new SimpleOverlayRenderer("casings/solid/seaborgium_substation_casing");
 
         ORGANIC_REPLICATOR_OVERLAY = new OrientedOverlayRenderer("machines/organic_replicator");
         FUSION_REACTOR_OVERLAY = new OrientedOverlayRenderer("machines/fusion_reactor");
@@ -57,8 +86,19 @@ public class ClientHandler {
         FREEZER_OVERLAY = new OrientedOverlayRenderer("machines/freezer");
 
         MAINTENANCE_OVERLAY_STERILE_CLEANING = new SimpleOverlayRenderer("overlay/machine/overlay_maintenance_sterile_cleaning");
+        MAINTENANCE_OVERLAY_ISO3_CLEANING = new SimpleOverlayRenderer("overlay/machine/overlay_maintenance_iso_3_cleaning");
+        MAINTENANCE_OVERLAY_ISO2_CLEANING = new SimpleOverlayRenderer("overlay/machine/overlay_maintenance_iso_2_cleaning");
+        MAINTENANCE_OVERLAY_ISO1_CLEANING = new SimpleOverlayRenderer("overlay/machine/overlay_maintenance_iso_1_cleaning");
+
 
         ENDER_ITEM_LINK = new SimpleOverlayRenderer("cover/overlay_ender_item_link");
+
+        WIRELESS_ENERGY_HATCH = new SimpleOverlayRenderer("overlay/machine/overlay_wireless_energy");
+        WIRELESS_ENERGY_HATCH_4A = new SimpleOverlayRenderer("overlay/machine/overlay_wireless_energy_4a");
+        WIRELESS_ENERGY_HATCH_16A = new SimpleOverlayRenderer("overlay/machine/overlay_wireless_energy_16a");
+        WIRELESS_ENERGY_HATCH_OFF = new SimpleOverlayRenderer("overlay/machine/overlay_wireless_energy_off");
+        WIRELESS_DATA_HATCH = new SimpleOverlayRenderer("overlay/machine/overlay_wireless_data");
+
         //MetaCasing1
         STABALLOY_CASING = new SimpleOverlayRenderer("casings/metal_casings/staballoy");
         QUANTUM_CASING = new SimpleOverlayRenderer("casings/metal_casings/quantum");
@@ -70,11 +110,20 @@ public class ClientHandler {
         INCOLOY_813_CASING = new SimpleOverlayRenderer("casings/metal_casings/incoloy_813");
         NITINOL_60_CASING = new SimpleOverlayRenderer("casings/metal_casings/nitinol_60");
         HASTELLOY_K243_CASING = new SimpleOverlayRenderer("casings/metal_casings/hastelloy_k243");
+        MARAGING_STEEL_250_CASING = new SimpleOverlayRenderer("casings/metal_casings/maraging_steel_250");
+        INCONEL_625_CASING = new SimpleOverlayRenderer("casings/metal_casings/inconel_625");
 
         ENRICHED_NAQUADAH_ALLOY_CASING = new SimpleOverlayRenderer("casings/metal_casings/enriched_naquadah_alloy");
         NAQUADRIA_CASING = new SimpleOverlayRenderer("casings/metal_casings/naquadria");
+        IRIDIUM_CASING = new SimpleOverlayRenderer("casings/metal_casings/iridium");
         HYPER_CASING = new SimpleOverlayRenderer("casings/solid/hyper_casing");
         HYPER_CASING_2 = new SimpleOverlayRenderer("casings/solid/hyper_casing_2");
         CLADDED_REACTOR_CASING = new SimpleOverlayRenderer("casings/solid/cladded_reactor_casing");
+
+        //ELEVATOR
+        ELEVATOR_CASING = new SimpleOverlayRenderer("gcyl:casings/elevator/elevator_base");
+        PUMP_MODULE_OVERLAY = new SimpleOverlayRenderer("gcyl:overlay/elevator/pump");
+        MINING_MODULE_OVERLAY = new SimpleOverlayRenderer("gcyl:overlay/elevator/mining");
+        ASSEMBLER_MODULE_OVERLAY = new SimpleOverlayRenderer("gcyl:overlay/elevator/assembler");
     }
 }

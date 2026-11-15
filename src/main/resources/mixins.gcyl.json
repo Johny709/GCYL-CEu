@@ -1,0 +1,14 @@
+{
+  "package": "com.fulltrix.gcyl.mixin",
+  "refmap": "mixins.gcyl.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MetaTileEntityHolderMixin",
+    "MixinProspectorScannerBehavior",
+    "MixinTricorderBehavior"
+  ],
+  "client": [],
+  "server": []
+}

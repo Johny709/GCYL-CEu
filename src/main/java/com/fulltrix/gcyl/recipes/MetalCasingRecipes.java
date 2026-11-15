@@ -1,17 +1,18 @@
 package com.fulltrix.gcyl.recipes;
 
-import com.fulltrix.gcyl.item.metal.MetalCasing1;
-import com.fulltrix.gcyl.item.metal.MetalCasing2;
+import com.fulltrix.gcyl.blocks.metal.MetalCasing1;
+import com.fulltrix.gcyl.blocks.metal.MetalCasing2;
 import gregtech.api.block.VariantBlock;
 import gregtech.api.recipes.ModHandler;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Material;
+import gregtech.common.ConfigHolder;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Arrays;
 
-import static com.fulltrix.gcyl.item.GCYLMetaBlocks.METAL_CASING_1;
-import static com.fulltrix.gcyl.item.GCYLMetaBlocks.METAL_CASING_2;
+import static com.fulltrix.gcyl.blocks.GCYLMetaBlocks.METAL_CASING_1;
+import static com.fulltrix.gcyl.blocks.GCYLMetaBlocks.METAL_CASING_2;
 import static gregtech.api.recipes.RecipeMaps.ASSEMBLER_RECIPES;
 import static gregtech.api.unification.ore.OrePrefix.frameGt;
 import static gregtech.api.unification.ore.OrePrefix.plate;
@@ -27,7 +28,7 @@ public class MetalCasingRecipes {
 
     private static <T extends Enum<T> & IStringSerializable> void registerMetalCasingRecipe(Material inputMaterial, VariantBlock<T> outputCasingType, T outputCasing) {
 
-        ModHandler.addShapedRecipe(String.format("metal_casing_%s", inputMaterial), outputCasingType.getItemVariant(outputCasing, 2),
+        ModHandler.addShapedRecipe(String.format("metal_casing_%s", inputMaterial), outputCasingType.getItemVariant(outputCasing, ConfigHolder.recipes.casingsPerCraft),
                 "PhP", "PFP", "PwP",
                 'P', OreDictUnifier.get(plate, inputMaterial),
                 'F', OreDictUnifier.get(frameGt, inputMaterial));
@@ -36,7 +37,7 @@ public class MetalCasingRecipes {
                 .input(plate, inputMaterial, 6)
                 .input(frameGt, inputMaterial)
                 .circuitMeta(6)
-                .outputs(outputCasingType.getItemVariant(outputCasing, 2))
+                .outputs(outputCasingType.getItemVariant(outputCasing, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
     }
 }

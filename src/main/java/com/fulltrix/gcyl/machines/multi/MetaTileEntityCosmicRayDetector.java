@@ -1,91 +1,71 @@
 package com.fulltrix.gcyl.machines.multi;
 
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.pipeline.IVertexOperation;
-import codechicken.lib.vec.Matrix4;
-import com.fulltrix.gcyl.materials.GCYLMaterials;
+import com.fulltrix.gcyl.api.multi.GCYLComputationRecipeLogic;
+import com.fulltrix.gcyl.api.multi.GCYLRecipeMapMultiblockController;
+import com.fulltrix.gcyl.api.pattern.TraceabilityPredicates;
+import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
+import com.fulltrix.gcyl.blocks.fusion.GCYLFusionCoils;
 import com.fulltrix.gcyl.client.ClientHandler;
-import com.fulltrix.gcyl.item.metal.MetalCasing2;
-import com.google.common.collect.Lists;
-import gregtech.api.GTValues;
+import com.fulltrix.gcyl.blocks.metal.MetalCasing2;
+import gregicality.multiblocks.common.GCYMConfigHolder;
+import gregicality.multiblocks.common.metatileentities.GCYMMetaTileEntities;
+import gregicality.multiblocks.common.metatileentities.multiblockpart.MetaTileEntityTieredHatch;
 import gregtech.api.capability.*;
-import gregtech.api.capability.impl.EnergyContainerList;
-import gregtech.api.capability.impl.FluidTankList;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.interfaces.IGregTechTileEntity;
 import gregtech.api.metatileentity.multiblock.IMultiblockPart;
 import gregtech.api.metatileentity.multiblock.MultiblockAbility;
-import gregtech.api.metatileentity.multiblock.MultiblockWithDisplayBase;
+import gregtech.api.metatileentity.multiblock.RecipeMapMultiblockController;
+import gregtech.api.metatileentity.multiblock.ui.MultiblockUIBuilder;
 import gregtech.api.pattern.BlockPattern;
 import gregtech.api.pattern.FactoryBlockPattern;
+import gregtech.api.pattern.MultiblockShapeInfo;
 import gregtech.api.pattern.PatternMatchContext;
-import gregtech.api.pattern.TraceabilityPredicate;
-import gregtech.api.util.GTUtility;
+import gregtech.api.recipes.Recipe;
+import gregtech.api.recipes.logic.OCParams;
+import gregtech.api.recipes.properties.RecipePropertyStorage;
+import gregtech.api.util.KeyUtil;
 import gregtech.client.renderer.ICubeRenderer;
-import gregtech.common.blocks.BlockFusionCasing;
 import gregtech.common.blocks.MetaBlocks;
-import gregtech.core.sound.GTSoundEvents;
+import gregtech.common.metatileentities.MetaTileEntities;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.COSMIC_RAY_DETECTOR_RECIPES;
 import static com.fulltrix.gcyl.materials.GCYLMaterials.BlackTitanium;
 import static com.fulltrix.gcyl.client.ClientHandler.QUANTUM_CASING;
-import static com.fulltrix.gcyl.item.GCYLMetaBlocks.METAL_CASING_2;
+import static com.fulltrix.gcyl.blocks.GCYLMetaBlocks.METAL_CASING_2;
+import static gregtech.api.util.RelativeDirection.*;
 
-public class MetaTileEntityCosmicRayDetector extends MultiblockWithDisplayBase implements IControllable {
-    public boolean isWorkingEnabled = false;
-    public boolean isActive = false;
-    protected IMultipleTankHandler exportFluidHandler;
-    private long maxVoltage = 0;
-    private boolean canSeeSky = false;
-    private boolean hasEnoughEnergy = false;
-    private IEnergyContainer energyContainer;
-    private int amount = 0;
-    public MetaTileEntityCosmicRayDetector(ResourceLocation metaTileEntityId) { //todo: tiering and gui
-        super(metaTileEntityId);
-        reinitializeStructurePattern();
-    }
+public class MetaTileEntityCosmicRayDetector extends GCYLRecipeMapMultiblockController implements IOpticalComputationReceiver {
 
-    @Override
-    protected void updateFormedValid() {
-        if (!getWorld().isRemote && this.getNumMaintenanceProblems() < 1 && isWorkingEnabled()) {
+    private IOpticalComputationProvider computationProvider;
+    private long maxVoltage;
 
-            if (getOffsetTimer() % 20 == 4) {
-                canSeeSky = canSeeSky();
+    public MetaTileEntityCosmicRayDetector(ResourceLocation metaTileEntityId) {
+        super(metaTileEntityId, COSMIC_RAY_DETECTOR_RECIPES, false);
+        this.recipeMapWorkable = new CosmicRayRecipeLogic(this) {
+            @Override
+            public long getMaxVoltage() {
+                return GCYMConfigHolder.globalMultiblocks.enableTieredCasings ? maxVoltage : super.getMaxVoltage();
             }
-            if (canSeeSky && !hasEnoughEnergy) {
-                if (getOffsetTimer() % 20 == 8) {
-                    hasEnoughEnergy = drainEnergy(true);
-                }
-            }
-
-            if (canSeeSky && hasEnoughEnergy) {
-                setActive(true);
-                drainEnergy(false);
-            } else
-                setActive(false);
-        } else
-            return;
+        };
     }
 
     private boolean canSeeSky() {
@@ -105,9 +85,9 @@ public class MetaTileEntityCosmicRayDetector extends MultiblockWithDisplayBase i
                 .aisle("######XXX######", "######XXX######", "######XXX######", "###############", "###############", "#######X#######", "#####xxxxx#####", "###xx#####xx###", "##x#########x##", "###############")
                 .aisle("#####XXXXX#####", "#####X###X#####", "#####X###X#####", "######XXX######", "######XXX######", "#####XXXXX#####", "####xxxxxxx####", "##xx#######xx##", "#x###########x#", "###############")
                 .aisle("####XXXXXXX####", "####X#####X####", "####X#####X####", "#####X###X#####", "#####X###X#####", "####XXxxxXX####", "###xxx###xxx###", "##x#########x##", "#x###########x#", "###############")
-                .aisle("###XXXXXXXXX###", "###X###E###X###", "###X#######X###", "####X#####X####", "####X##F##X####", "####XxxxxxX####", "###xx#####xx###", "#xx#########xx#", "x#############x", "###############")
-                .aisle("###XXXXXXXXX###", "###X##EcE##X###", "###X###c###X###", "####X##c##X####", "####X#FcF#X####", "###XXxxExxXX###", "##xxx##C##xxx##", "#x#####C#####x#", "x######C######x", "#######s#######")
-                .aisle("###XXXXXXXXX###", "###X###E###X###", "###X#######X###", "####X#####X####", "####X##F##X####", "####XxxxxxX####", "###xx#####xx###", "#xx#########xx#", "x#############x", "###############")
+                .aisle("###XXXXXXXXX###", "###X###E###X###", "###X#######X###", "####X#####X####", "####X##E##X####", "####XxxxxxX####", "###xx#####xx###", "#xx#########xx#", "x#############x", "###############")
+                .aisle("###XXXXXXXXX###", "###X##EcE##X###", "###X###c###X###", "####X##c##X####", "####X#EcE#X####", "###XXxxExxXX###", "##xxx##C##xxx##", "#x#####C#####x#", "x######C######x", "#######s#######")
+                .aisle("###XXXXXXXXX###", "###X###E###X###", "###X#######X###", "####X#####X####", "####X##E##X####", "####XxxxxxX####", "###xx#####xx###", "#xx#########xx#", "x#############x", "###############")
                 .aisle("####XXXXXXX####", "####X#####X####", "####X#####X####", "#####X###X#####", "#####X###X#####", "####XXxxxXX####", "###xxx###xxx###", "##x#########x##", "#x###########x#", "###############")
                 .aisle("#####XXXXX#####", "#####X###X#####", "#####X###X#####", "######XXX######", "######XXX######", "#####XXXXX#####", "####xxxxxxx####", "##xx#######xx##", "#x###########x#", "###############")
                 .aisle("######XXX######", "######XSX######", "######XXX######", "###############", "###############", "#######X#######", "#####xxxxx#####", "###xx#####xx###", "##x#########x##", "###############")
@@ -115,179 +95,95 @@ public class MetaTileEntityCosmicRayDetector extends MultiblockWithDisplayBase i
                 .aisle("###############", "###############", "###############", "###############", "###############", "###############", "###############", "######xxx######", "####xx###xx####", "###############")
                 .aisle("###############", "###############", "###############", "###############", "###############", "###############", "###############", "###############", "######xxx######", "###############")
                 .where('S', selfPredicate())
-                .where('X', states(getCasingState()).setMinGlobalLimited(145).or(autoAbilities(true, true, true, false)))
+                .where('X', states(getCasingState()).setMinGlobalLimited(145).or(autoAbilities(true, true, true, true, false, true, false)).or(abilities(MultiblockAbility.COMPUTATION_DATA_RECEPTION).setExactLimit(1)))
                 .where('x', states(getSecondaryCasingState()))
                 .where('C', frames(BlackTitanium))
-                .where('c', states(MetaBlocks.FUSION_CASING.getState(BlockFusionCasing.CasingType.SUPERCONDUCTOR_COIL)))
-                .where('F', air())
-                .where('E', air())
-                .where('s', air())
+                .where('c', states(GCYLMetaBlocks.FUSION_COILS.getState(GCYLFusionCoils.CasingType.ADV_FUSION_COIL_3)))
+                .where('E', TraceabilityPredicates.tieredHatchPredicate())
+                .where('s', states(GCYLMetaBlocks.FUSION_COILS.getState(GCYLFusionCoils.CasingType.ADV_FUSION_COIL_3)))
                 .where('#', any())
                 .build();
     }
 
-    public TraceabilityPredicate autoAbilities(boolean checkEnergyIn,
-                                               boolean checkMaintenance,
-                                               boolean checkFluidOut,
-                                               boolean checkMuffler) {
-        TraceabilityPredicate predicate = super.autoAbilities(checkMaintenance, checkMuffler);
-
-        if (checkEnergyIn) {
-            predicate = predicate.or(abilities(MultiblockAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                    .setMaxGlobalLimited(2)
-                    .setPreviewCount(1));
-        }
-        if (checkFluidOut) {
-            predicate = predicate.or(abilities(MultiblockAbility.EXPORT_FLUIDS).setPreviewCount(1));
-        }
-        return predicate;
-    }
-
-    /*
-    public static Predicate<BlockWorldState> fieldGenPredicate() {
-        return (blockWorldState) -> {
-            IBlockState blockState = blockWorldState.getBlockState();
-            if (!(blockState.getBlock() instanceof FieldGenCasing)) {
-                return false;
-            } else {
-                FieldGenCasing motorCasing = (FieldGenCasing) blockState.getBlock();
-                FieldGenCasing.CasingType tieredCasingType = motorCasing.getState(blockState);
-                FieldGenCasing.CasingType currentCasing = blockWorldState.getMatchContext().getOrPut("FieldGen", tieredCasingType);
-                return currentCasing.getName().equals(tieredCasingType.getName());
-            }
-        };
-    }
-
-    public static Predicate<BlockWorldState> emitterPredicate() {
-        return (blockWorldState) -> {
-            IBlockState blockState = blockWorldState.getBlockState();
-            if (!(blockState.getBlock() instanceof EmitterCasing)) {
-                return false;
-            } else {
-                EmitterCasing motorCasing = (EmitterCasing) blockState.getBlock();
-                EmitterCasing.CasingType tieredCasingType = motorCasing.getState(blockState);
-                EmitterCasing.CasingType currentCasing = blockWorldState.getMatchContext().getOrPut("Emitter", tieredCasingType);
-                return currentCasing.getName().equals(tieredCasingType.getName());
-            }
-        };
-    }
-
-    public static Predicate<BlockWorldState> sensorPredicate() {
-        return (blockWorldState) -> {
-            IBlockState blockState = blockWorldState.getBlockState();
-            if (!(blockState.getBlock() instanceof SensorCasing)) {
-                return false;
-            } else {
-                SensorCasing motorCasing = (SensorCasing) blockState.getBlock();
-                SensorCasing.CasingType tieredCasingType = motorCasing.getState(blockState);
-                SensorCasing.CasingType currentCasing = blockWorldState.getMatchContext().getOrPut("Sensor", tieredCasingType);
-                return currentCasing.getName().equals(tieredCasingType.getName());
-            }
-        };
-    }
-
-     */
-
     @Override
-    protected void addDisplayText(List<ITextComponent> textList) {
-        if (this.isStructureFormed()) {
-            if (energyContainer != null && energyContainer.getEnergyCapacity() > 0) {
-                maxVoltage = energyContainer.getInputVoltage();
-                if (maxVoltage >= getVoltage()) {
-                    String voltageName = GTValues.VN[GTUtility.getTierByVoltage(maxVoltage)];
-                    textList.add(new TextComponentTranslation("gregtech.multiblock.max_energy_per_tick", maxVoltage, voltageName));
-                } else if (!hasEnoughEnergy)
-                    textList.add(new TextComponentTranslation("gregtech.multiblock.not_enough_energy").setStyle(new Style().setColor(TextFormatting.RED)));
-            }
-            if (!canSeeSky)
-                textList.add(new TextComponentTranslation("gcyl.multiblock.cosmic_ray_detector.tooltip.1")
-                        .setStyle(new Style().setColor(TextFormatting.RED)));
-            if (exportFluidHandler.fill(GCYLMaterials.HeavyLeptonMix.getFluid(1), false) < 1)
-                textList.add(new TextComponentTranslation("gcyl.multiblock.cosmic_ray_detector.tooltip.8").setStyle(new Style().setColor(TextFormatting.RED)));
-            if (hasEnoughEnergy && canSeeSky) {
-                textList.add(new TextComponentTranslation("gcyl.multiblock.cosmic_ray_detector.tooltip.5", this.amount));
-            }
-        }
+    public List<MultiblockShapeInfo> getMatchingShapes() {
+        MultiblockShapeInfo.Builder builder = MultiblockShapeInfo.builder(RIGHT, DOWN, FRONT)
+                .aisle("###############", "###############", "###############", "###############", "###############", "###############", "###############", "###############", "######xxx######", "###############")
+                .aisle("###############", "###############", "###############", "###############", "###############", "###############", "###############", "######xxx######", "####xx###xx####", "###############")
+                .aisle("###############", "###############", "###############", "###############", "###############", "###############", "#######x#######", "####xxx#xxx####", "###x#######x###", "###############")
+                .aisle("######ReM######", "######XXX######", "######XXX######", "###############", "###############", "#######X#######", "#####xxxxx#####", "###xx#####xx###", "##x#########x##", "###############")
+                .aisle("#####XXXXX#####", "#####X###X#####", "#####X###X#####", "######XXX######", "######XXX######", "#####XXXXX#####", "####xxxxxxx####", "##xx#######xx##", "#x###########x#", "###############")
+                .aisle("####XXXXXXX####", "####X#####X####", "####X#####X####", "#####X###X#####", "#####X###X#####", "####XXxxxXX####", "###xxx###xxx###", "##x#########x##", "#x###########x#", "###############")
+                .aisle("###XXXXXXXXX###", "###X###E###X###", "###X#######X###", "####X#####X####", "####X##E##X####", "####XxxxxxX####", "###xx#####xx###", "#xx#########xx#", "x#############x", "###############")
+                .aisle("###XXXXXXXXX###", "###X##EcE##X###", "###X###c###X###", "####X##c##X####", "####X#EcE#X####", "###XXxxExxXX###", "##xxx##C##xxx##", "#x#####C#####x#", "x######C######x", "#######s#######")
+                .aisle("###XXXXXXXXX###", "###X###E###X###", "###X#######X###", "####X#####X####", "####X##E##X####", "####XxxxxxX####", "###xx#####xx###", "#xx#########xx#", "x#############x", "###############")
+                .aisle("####XXXXXXX####", "####X#####X####", "####X#####X####", "#####X###X#####", "#####X###X#####", "####XXxxxXX####", "###xxx###xxx###", "##x#########x##", "#x###########x#", "###############")
+                .aisle("#####XXXXX#####", "#####X###X#####", "#####X###X#####", "######XXX######", "######XXX######", "#####XXXXX#####", "####xxxxxxx####", "##xx#######xx##", "#x###########x#", "###############")
+                .aisle("######XXX######", "######ISO######", "######XXo######", "###############", "###############", "#######X#######", "#####xxxxx#####", "###xx#####xx###", "##x#########x##", "###############")
+                .aisle("###############", "###############", "###############", "###############", "###############", "###############", "#######x#######", "####xxx#xxx####", "###x#######x###", "###############")
+                .aisle("###############", "###############", "###############", "###############", "###############", "###############", "###############", "######xxx######", "####xx###xx####", "###############")
+                .aisle("###############", "###############", "###############", "###############", "###############", "###############", "###############", "###############", "######xxx######", "###############")
+                .where('S', this, EnumFacing.SOUTH)
+                .where('I', MetaTileEntities.ITEM_IMPORT_BUS[3], EnumFacing.SOUTH)
+                .where('O', MetaTileEntities.ITEM_EXPORT_BUS[3], EnumFacing.SOUTH)
+                .where('o', MetaTileEntities.FLUID_EXPORT_HATCH[3], EnumFacing.SOUTH)
+                .where('M', MetaTileEntities.MAINTENANCE_HATCH, EnumFacing.NORTH)
+                .where('R', MetaTileEntities.COMPUTATION_HATCH_RECEIVER, EnumFacing.NORTH)
+                .where('C', MetaBlocks.FRAMES.get(BlackTitanium).getStateFromMeta(14))
+                .where('c', GCYLMetaBlocks.FUSION_COILS.getState(GCYLFusionCoils.CasingType.ADV_FUSION_COIL_3))
+                .where('X', this.getCasingState())
+                .where('x', this.getSecondaryCasingState())
+                .where('s', GCYLMetaBlocks.FUSION_COILS.getState(GCYLFusionCoils.CasingType.ADV_FUSION_COIL_3));
+        return Arrays.stream(GCYMMetaTileEntities.TIERED_HATCH)
+                .map(hatch -> builder.where('E', hatch, EnumFacing.DOWN)
+                        .where('e', MetaTileEntities.ENERGY_INPUT_HATCH[hatch.getTier()], EnumFacing.NORTH).build())
+                .collect(Collectors.toList());
     }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, boolean advanced) {
-        super.addInformation(stack, player, tooltip, advanced);
-        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.2"));
-        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.3"));
-        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.4"));
-        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.6"));
-        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.7"));
-    }
-
-    /*
-    @Override
-    protected void formStructure(PatternMatchContext context) {
-        super.formStructure(context);
-        //EmitterCasing.CasingType emitter = context.getOrDefault("Emitter", EmitterCasing.CasingType.EMITTER_LV);
-        //SensorCasing.CasingType sensor = context.getOrDefault("Sensor", SensorCasing.CasingType.SENSOR_LV);
-        //FieldGenCasing.CasingType fieldGen = context.getOrDefault("FieldGen", FieldGenCasing.CasingType.FIELD_GENERATOR_LV);
-        //int min = Collections.min(Arrays.asList(emitter.getTier(), sensor.getTier(), fieldGen.getTier()));
-        //maxVoltage = (long) (Math.pow(4, min) * 8);
-        maxVoltage = energyContainer.getInputVoltage();
-        this.initializeAbilities();
-        amount = getAmount();
-    }
-     */
 
     @Override
     protected void formStructure(PatternMatchContext context) {
         super.formStructure(context);
-        initializeAbilities();
-        amount = getAmount();
-    }
-
-    private int getAmount() {
-        double amount = Math.min(((double) this.getPos().getY()) / (256 - 5), 1);
-        amount = Math.max(amount, 0);
-        amount *= 35;
-        amount *= getOverclock();
-        amount += 15;
-        return (int) amount;
-    }
-
-    private void initializeAbilities() {
-        this.exportFluidHandler = new FluidTankList(true, getAbilities(MultiblockAbility.EXPORT_FLUIDS));
-        this.energyContainer = new EnergyContainerList(getAbilities(MultiblockAbility.INPUT_ENERGY));
-    }
-
-    private void resetTileAbilities() {
-        this.exportFluidHandler = new FluidTankList(true);
-        this.energyContainer = new EnergyContainerList(Lists.newArrayList());
-    }
-
-    private boolean drainEnergy(boolean simulate) {
-        if (maxVoltage >= getVoltage() && energyContainer.getEnergyStored() >= getVoltage() &&
-                exportFluidHandler.fill(GCYLMaterials.HeavyLeptonMix.getFluid(1), false) > 0) {
-            if (!simulate) {
-                energyContainer.removeEnergy(getVoltage() * getOverclock());
-                exportFluidHandler.fill(GCYLMaterials.HeavyLeptonMix.getFluid(this.amount), true);
-            }
-            return true;
+        int tier = context.getOrDefault("tiered_hatches", new ArrayList<MetaTileEntityTieredHatch>()).get(0).getTier() - 1;
+        this.maxVoltage = 32L << tier * 2;
+        List<IOpticalComputationHatch> providers = getAbilities(MultiblockAbility.COMPUTATION_DATA_RECEPTION);
+        if (providers != null && providers.size() >= 1) {
+            computationProvider = providers.get(0);
         }
-        return false;
-    }
 
-    public long getOverclock() {
-        int tierDifference = GTUtility.getTierByVoltage(energyContainer.getInputVoltage()) - GTValues.UHV;
-        return (long) Math.floor(Math.pow(4, tierDifference));
-    }
-
-    private long getVoltage() {
-        return GTValues.V[GTValues.UHV];
+        if (computationProvider == null) {
+            invalidateStructure();
+        }
     }
 
     @Override
     public void invalidateStructure() {
         super.invalidateStructure();
         this.maxVoltage = 0;
-        this.resetTileAbilities();
     }
+
+    @Override
+    protected void configureDisplayText(MultiblockUIBuilder builder) {
+        super.configureDisplayText(builder);
+        CosmicRayRecipeLogic recipeLogic = (CosmicRayRecipeLogic)this.recipeMapWorkable;
+        builder.addComputationUsageLine(recipeLogic.getRecipeCWUt())
+                .addCustom((keyManager, uiSyncer) -> {
+                    if (!uiSyncer.syncBoolean(canSeeSky())) {
+                        keyManager.add(KeyUtil.lang(TextFormatting.RED, "gcyl.multiblock.cosmic_ray_detector.tooltip.1"));
+                    }
+                });
+    }
+
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, player, tooltip, advanced);
+        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.description"));
+        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.2"));
+        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.3"));
+        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.4"));
+        tooltip.add(I18n.format("gcyl.multiblock.cosmic_ray_detector.tooltip.5"));
+    }
+
 
     private IBlockState getCasingState() {
         return METAL_CASING_2.getState(MetalCasing2.CasingType.QUANTUM);
@@ -303,11 +199,6 @@ public class MetaTileEntityCosmicRayDetector extends MultiblockWithDisplayBase i
         return QUANTUM_CASING;
     }
 
-    @Override
-    public void renderMetaTileEntity(CCRenderState renderState, Matrix4 translation, IVertexOperation[] pipeline) {
-        super.renderMetaTileEntity(renderState, translation, pipeline);
-        getFrontOverlay().renderOrientedState(renderState, translation, pipeline, getFrontFacing(), this.isActive(), this.isWorkingEnabled);
-    }
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -321,87 +212,34 @@ public class MetaTileEntityCosmicRayDetector extends MultiblockWithDisplayBase i
     }
 
     @Override
-    public boolean isWorkingEnabled() {
-        return isWorkingEnabled;
+    public IOpticalComputationProvider getComputationProvider() {
+        return computationProvider;
     }
 
-    @Override
-    public void setWorkingEnabled(boolean isWorkingAllowed) {
-        this.isWorkingEnabled = isWorkingAllowed;
-        markDirty();
-        World world = getWorld();
-        if (world != null && !world.isRemote) {
-            writeCustomData(GregtechDataCodes.WORKING_ENABLED, buf -> buf.writeBoolean(isWorkingEnabled));
+    private static class CosmicRayRecipeLogic extends GCYLComputationRecipeLogic {
+        public CosmicRayRecipeLogic(RecipeMapMultiblockController metaTileEntity) {
+            super(metaTileEntity, ComputationType.STEADY);
         }
-    }
 
-    @Override
-    public boolean isActive() {
-        return super.isActive() && this.isWorkingEnabled;
-    }
-
-    protected void setActive(boolean active) {
-        if (this.isActive != active) {
-            this.isActive = active;
-            markDirty();
-            World world = getWorld();
-            if (world != null && !world.isRemote) {
-                writeCustomData(GregtechDataCodes.WORKABLE_ACTIVE, buf -> buf.writeBoolean(active));
-            }
+        @NotNull
+        @Override
+        public MetaTileEntityCosmicRayDetector getMetaTileEntity() {
+            return (MetaTileEntityCosmicRayDetector) super.getMetaTileEntity();
         }
-    }
 
-    @Override
-    public SoundEvent getSound() {
-        return GTSoundEvents.ARC;
-    }
+        @Override
+        public boolean checkRecipe(@NotNull Recipe recipe) {
+            if (!super.checkRecipe(recipe))
+                return false;
 
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == GregtechTileCapabilities.CAPABILITY_CONTROLLABLE) {
-            return GregtechTileCapabilities.CAPABILITY_CONTROLLABLE.cast(this);
+            return getMetaTileEntity().canSeeSky();
         }
-        return super.getCapability(capability, side);
-    }
 
-    @Override
-    public void receiveCustomData(int dataId, PacketBuffer buf) {
-        super.receiveCustomData(dataId, buf);
-        if (dataId == GregtechDataCodes.WORKABLE_ACTIVE) {
-            this.isActive = buf.readBoolean();
-            scheduleRenderUpdate();
-        } else if (dataId == GregtechDataCodes.WORKING_ENABLED) {
-            this.isWorkingEnabled = buf.readBoolean();
-            scheduleRenderUpdate();
+        @Override
+        protected void modifyOverclockPre(@NotNull OCParams ocParams, @NotNull RecipePropertyStorage storage) {
+            super.modifyOverclockPre(ocParams, storage);
+
+            ocParams.setDuration(Math.max(1,ocParams.duration() - getMetaTileEntity().getPos().getY()));
         }
-    }
-
-    @Override
-    public void writeInitialSyncData(PacketBuffer buf) {
-        super.writeInitialSyncData(buf);
-        buf.writeBoolean(isActive);
-        buf.writeBoolean(this.isWorkingEnabled);
-    }
-
-    @Override
-    public void receiveInitialSyncData(PacketBuffer buf) {
-        super.receiveInitialSyncData(buf);
-        this.isActive = buf.readBoolean();
-        this.isWorkingEnabled = buf.readBoolean();
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound data) {
-        super.writeToNBT(data);
-        data.setBoolean("isActive", this.isActive);
-        data.setBoolean("isWorkingEnabled", this.isWorkingEnabled);
-        return data;
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound data) {
-        super.readFromNBT(data);
-        this.isActive = data.getBoolean("isActive");
-        this.isWorkingEnabled = data.getBoolean("isWorkingEnabled");
     }
 }

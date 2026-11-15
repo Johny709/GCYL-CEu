@@ -1,5 +1,7 @@
 package com.fulltrix.gcyl.recipes.chain;
 
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
 import gregtech.api.fluids.store.FluidStorageKeys;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import net.minecraft.init.Blocks;
@@ -8,9 +10,8 @@ import net.minecraft.item.ItemStack;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
-import static com.fulltrix.gcyl.materials.GCYLNuclearMaterials.Plutonium;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.CHEMICAL_DEHYDRATOR_RECIPES;
-import static com.fulltrix.gcyl.recipes.GCYLRecipeMaps.ADVANCED_MIXER_RECIPES;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.CHEMICAL_DEHYDRATOR_RECIPES;
+import static com.fulltrix.gcyl.api.recipes.GCYLRecipeMaps.ADVANCED_MIXER_RECIPES;
 import static gregtech.api.recipes.RecipeMaps.*;
 import static gregtech.api.unification.material.Materials.*;
 import static gregtech.api.unification.ore.OrePrefix.*;
@@ -30,25 +31,6 @@ public class VariousChains {
 
 
     private static void misc() {
-
-        // UU-Matter ===================================================================================================
-        ADVANCED_MIXER_RECIPES.recipeBuilder().duration(50).EUt(491520)
-                .fluidInputs(ChargedMatter.getFluid(1000))
-                .fluidInputs(NeutralMatter.getFluid(1000))
-                .fluidInputs(FreeElectronGas.getFluid(2000))
-                .fluidOutputs(UUMatter.getFluid(1000))
-                .buildAndRegister();
-
-        // Sodium Hypochlorite =========================================================================================
-        // 2NaOH + 2Cl -> H2O + NaCl + NaClO
-        LARGE_CHEMICAL_RECIPES.recipeBuilder().duration(80).EUt(120)
-                .fluidInputs(Chlorine.getFluid(2000))
-                .input(dust, SodiumHydroxide, 6)
-                .fluidOutputs(Water.getFluid(1000))
-                .output(dust, Salt, 2)
-                .output(dust, SodiumHypochlorite, 3)
-                .circuitMeta(1)
-                .buildAndRegister();
 
         // HClO + NaOH -> H2O + NaClO
         CHEMICAL_RECIPES.recipeBuilder().duration(90).EUt(120)
@@ -355,6 +337,16 @@ public class VariousChains {
                 .notConsumable(IntCircuitIngredient.getIntegratedCircuit(1))
                 .output(dust, AluminiumChloride, 4)
                 .buildAndRegister();
+
+        if (GCYLCore.isModLoaded(GCYLUtility.MATERIAL_REPLICATION_MODID)) {
+            // UU-Matter ===================================================================================================
+            ADVANCED_MIXER_RECIPES.recipeBuilder().duration(50).EUt(491520)
+                    .fluidInputs(ChargedMatter.getFluid(1000))
+                    .fluidInputs(NeutralMatter.getFluid(1000))
+                    .fluidInputs(FreeElectronGas.getFluid(2000))
+                    .fluidOutputs(UUMatter.getFluid(1000))
+                    .buildAndRegister();
+        }
     }
 
     private static void hydrogenPeroxide() {
@@ -604,6 +596,7 @@ public class VariousChains {
         // Rocket fuel chemicals
         // 2NH3 + H2O2 = N2H4 + H2O
         CHEMICAL_RECIPES.recipeBuilder().duration(320).EUt(30)
+                .circuitMeta(1)
                 .fluidInputs(Ammonia.getFluid(2000))
                 .fluidInputs(HydrogenPeroxide.getFluid(1000))
                 .fluidOutputs(Hydrazine.getFluid(1000))

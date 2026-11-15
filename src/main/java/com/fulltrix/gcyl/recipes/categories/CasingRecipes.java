@@ -1,21 +1,24 @@
 package com.fulltrix.gcyl.recipes.categories;
 
-import com.fulltrix.gcyl.item.GCYLMetaBlocks;
-import com.fulltrix.gcyl.item.GCYLMultiblockCasing2;
+import com.fulltrix.gcyl.GCYLCore;
+import com.fulltrix.gcyl.api.GCYLUtility;
+import com.fulltrix.gcyl.blocks.GCYLMetaBlocks;
+import com.fulltrix.gcyl.blocks.GCYLMultiblockCasing2;
 import gregicality.multiblocks.common.metatileentities.GCYMMetaTileEntities;
 import gregtech.api.GTValues;
-import gregtech.api.unification.material.MarkerMaterials;
 import gregtech.api.unification.stack.MaterialStack;
+import gregtech.common.ConfigHolder;
 import gregtech.common.blocks.MetaBlocks;
 import gregtech.common.metatileentities.MetaTileEntities;
 
 import static com.fulltrix.gcyl.materials.GCYLMaterials.*;
 import static com.fulltrix.gcyl.item.GCYLCoreItems.*;
-import static com.fulltrix.gcyl.item.GCYLHeatingCoil.CoilType.*;
-import static com.fulltrix.gcyl.item.GCYLMultiblockCasing2.CasingType.*;
-import static com.fulltrix.gcyl.item.GCYLReactorCasing.CasingType.*;
+import static com.fulltrix.gcyl.blocks.GCYLHeatingCoil.CoilType.*;
+import static com.fulltrix.gcyl.blocks.GCYLMultiblockCasing2.CasingType.*;
+import static com.fulltrix.gcyl.blocks.GCYLReactorCasing.CasingType.*;
 import static com.fulltrix.gcyl.materials.GCYLNuclearMaterials.ReactorSteel;
 import static gregicality.multiblocks.api.unification.GCYMMaterials.*;
+import static supercritical.api.unification.material.SCMaterials.Plutonium244;
 import static gregtech.api.GTValues.L;
 import static gregtech.api.recipes.GTRecipeHandler.removeRecipesByInputs;
 import static gregtech.api.recipes.ModHandler.removeRecipeByName;
@@ -28,7 +31,6 @@ import static gregtech.api.unification.ore.OrePrefix.*;
 import static gregtech.common.blocks.BlockWireCoil.CoilType.*;
 import static gregtech.common.items.MetaItems.*;
 import static gregtech.common.items.MetaItems.EMITTER_UV;
-import static gregtech.common.metatileentities.MetaTileEntities.HULL;
 
 public class CasingRecipes {
 
@@ -114,16 +116,6 @@ public class CasingRecipes {
                 .inputs(MetaTileEntities.HULL[GTValues.LuV].getStackForm())
                 .fluidInputs(Uranium238.getFluid(L * 2))
                 .outputs(GCYMMetaTileEntities.TIERED_HATCH[6].getStackForm())
-                .buildAndRegister();
-
-        ASSEMBLER_RECIPES.recipeBuilder().duration(100).EUt(30720 * 4)
-                .input(circuit, ZPM, 2)
-                .input(gear, BabbittAlloy, 4)
-                .input(plate, BabbittAlloy, 4)
-                .input(cableGtOctal, NiobiumTitanium)
-                .inputs(MetaTileEntities.HULL[GTValues.ZPM].getStackForm())
-                .fluidInputs(Plutonium244.getFluid(L * 2))
-                .outputs(GCYMMetaTileEntities.TIERED_HATCH[7].getStackForm())
                 .buildAndRegister();
 
         ASSEMBLER_RECIPES.recipeBuilder().duration(100).EUt(30720 * 16)
@@ -530,7 +522,7 @@ public class CasingRecipes {
                 .input(plateDense, Lead, 9)
                 .input(plateDense, ReactorSteel, 4)
                 .input(plateDense, StainlessSteel, 2)
-                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(CLADDED_REACTOR_CASING, 4))
+                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(CLADDED_REACTOR_CASING, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
 
@@ -569,7 +561,7 @@ public class CasingRecipes {
                 .input(plate, HDCS, 6)
                 .input(stick, EnrichedNaquadahAlloy, 4)
                 .input(screw, Trinium, 8)
-                .outputs(GCYLMetaBlocks.MULTIBLOCK_CASING2.getItemVariant(STELLAR_CONTAINMENT, 4))
+                .outputs(GCYLMetaBlocks.MULTIBLOCK_CASING2.getItemVariant(STELLAR_CONTAINMENT, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
         // Hyper Reactor Casing
@@ -578,7 +570,7 @@ public class CasingRecipes {
                 .input(frameGt, Naquadria)
                 .input(screw, EnrichedNaquadahAlloy, 16)
                 .input(plate, Incoloy813, 8)
-                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING, 4))
+                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
         // Hyper Reactor Casing 2
@@ -587,7 +579,7 @@ public class CasingRecipes {
                 .inputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING))
                 .input(screw, Pikyonium, 16)
                 .input(plate, TitanSteel, 8)
-                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING_2, 4))
+                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING_2, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
         // Hyper Core
@@ -599,7 +591,7 @@ public class CasingRecipes {
                 .input(screw, Dubnium, 16)
                 .input(plate, Naquadria, 4)
                 .input(circuit, UV)
-                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CORE, 4))
+                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CORE, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
         // Hyper Core 2
@@ -607,11 +599,11 @@ public class CasingRecipes {
                 .inputs(FIELD_GENERATOR_UHV.getStackForm(2))
                 .inputs(SENSOR_UHV.getStackForm())
                 .inputs(EMITTER_UHV.getStackForm())
-                .inputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING, 2))
+                .inputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING, ConfigHolder.recipes.casingsPerCraft))
                 .input(screw, Rutherfordium, 16)
                 .input(plate, TungstenTitaniumCarbide, 4)
                 .input(circuit, UHV)
-                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CORE_2, 4))
+                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CORE_2, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
         // Hyper Core 3
@@ -619,11 +611,11 @@ public class CasingRecipes {
                 .inputs(FIELD_GENERATOR_UEV.getStackForm(2))
                 .inputs(SENSOR_UEV.getStackForm())
                 .inputs(EMITTER_UEV.getStackForm())
-                .inputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING_2, 2))
+                .inputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CASING_2, ConfigHolder.recipes.casingsPerCraft))
                 .input(screw, TriniumTitanium, 16)
                 .input(plate, TitanSteel, 4)
                 .input(circuit, UEV)
-                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CORE_3, 4))
+                .outputs(GCYLMetaBlocks.REACTOR_CASING.getItemVariant(HYPER_CORE_3, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
         // Bio Reactor Casing
@@ -632,9 +624,30 @@ public class CasingRecipes {
                 .input(plate, NaquadahAlloy, 4)
                 .input(screw, Dubnium, 4)
                 .fluidInputs(SolderingAlloy.getFluid(L))
-                .outputs(GCYLMetaBlocks.MULTIBLOCK_CASING2.getItemVariant(GCYLMultiblockCasing2.CasingType.BIO_REACTOR, 2))
+                .outputs(GCYLMetaBlocks.MULTIBLOCK_CASING2.getItemVariant(GCYLMultiblockCasing2.CasingType.BIO_REACTOR, ConfigHolder.recipes.casingsPerCraft))
                 .buildAndRegister();
 
+        //WIRELESS PSS CASING
+        ASSEMBLER_RECIPES.recipeBuilder().duration(150).EUt(GTValues.VA[GTValues.UV])
+                .input(plate, Enderium, 6)
+                .input(frameGt, Seaborgium)
+                .inputs(FIELD_GENERATOR_UV.getStackForm())
+                .circuitMeta(6)
+                .fluidInputs(Indalloy140.getFluid(L * 2))
+                .outputs(GCYLMetaBlocks.MULTIBLOCK_CASING2.getItemVariant(GCYLMultiblockCasing2.CasingType.SEABORGIUM_SUBSTATION, ConfigHolder.recipes.casingsPerCraft))
+                .buildAndRegister();
+
+        if (GCYLCore.isModLoaded(GCYLUtility.SUPERCRITICAL_MODID)) {
+            ASSEMBLER_RECIPES.recipeBuilder().duration(100).EUt(30720 * 4)
+                    .input(circuit, ZPM, 2)
+                    .input(gear, BabbittAlloy, 4)
+                    .input(plate, BabbittAlloy, 4)
+                    .input(cableGtOctal, NiobiumTitanium)
+                    .inputs(MetaTileEntities.HULL[GTValues.ZPM].getStackForm())
+                    .fluidInputs(Plutonium244.getFluid(L * 2))
+                    .outputs(GCYMMetaTileEntities.TIERED_HATCH[7].getStackForm())
+                    .buildAndRegister();
+        }
     }
 
     //TODO: component casings?
